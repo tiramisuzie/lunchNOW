@@ -26,9 +26,20 @@ function handle404(req, res, next) {
   next(createError(404));
 }
 
+function getData() {}
+//add new object to DB
+function addDataToDb() {}
+//details for one object
+function getDetails() {}
+//display form
+function searchForRecipesExternalApi() {}
 
 module.exports = {
   handleError,
   handleConnectionError,
-  handle404
+  handle404,
+  getData,
+  addDataToDb,
+  getDetails,
+  searchForRecipesExternalApi
 };
