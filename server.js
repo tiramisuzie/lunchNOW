@@ -7,25 +7,25 @@ const PORT = process.env.PORT;
 const app = express();
 const tasks = require('./tasks');
 
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.static('./public'));
 
-app.get('/', tasks.reqDataFromExtAPI);
+// app.get('/', tasks.reqDataFromExtAPI);
 
-//grabbing and returning all objects from database
+// //grabbing and returning all objects from database
 app.get('/recipes', tasks.getData);
-//add new object to DB
-app.post('/recipes', tasks.addDataToDb);
-//details for one object
-app.get('/recipes/:id', tasks.getDetails);
-//display form
-app.get('/favorites', tasks.newRecipeForm);
+// //add new object to DB
+// app.post('/recipes', tasks.addDataToDb);
+// //details for one object
+// app.get('/recipes/:id', tasks.getDetails);
+// //display form
+// app.get('/favorites', tasks.newRecipeForm);
 
-app.get('/about_us', tasks.searchRecipesForm);
-app.get('/search_results/', tasks.searchForRecipesExternalApi);
+// app.get('/about_us', tasks.searchRecipesForm);
+// app.get('/search_results/', tasks.searchForRecipesExternalApi);
 
 app.use(tasks.handle404);
 

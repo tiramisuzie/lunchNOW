@@ -11,16 +11,8 @@
 </header>
 <main>
   <section>
-    <h2>All Recipes (
-      <%=count %> stored )</h2>
-    <div>
-      <% recipes.forEach( recipe =>  {%>
-      <%- include('partials/itemShort', { recipe:recipe }); -%>
-      <form action="/recipe/<%= recipe.id %>" method="get">
-        <input type="submit" value="Details" />
-      </form>
-      <% }); %>
-    </div>
+    <h2>All Recipes </h2>
+    
   </section>
 </main>
 <%- include('partials/footer'); -%>
