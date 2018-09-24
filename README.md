@@ -10,9 +10,10 @@
 ## Description
 Lunch now is an app which helps organize the cooking process in the most effective way and provide the user with recipes search be ingredients, methods of cooking, nutrition facts and shopping cart functionality.
 
-## User story
+## USER STORIES
 ## MVP
 As a user, I want to be able to choose the dish to cook based on available ingredients, so I have some proven algorithms to get a lunch (dinner).  
+  
 As a user, I want to search for recipes based on the ingredients I have available to cook a delicious meal.  
 As a user, I want the list of measures for product and instructions in a recipe be available both in imperial and continental scales, so I can share my favorite recipes with my friends from the whole world.  
 As a user, I want to view, add, and delete recipes to my recipe book so I can keep track of all the recipes I enjoy or hate.  
