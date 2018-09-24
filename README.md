@@ -38,3 +38,4 @@ EJS, Node, Express, Postgresql
 ## Change Log
 
 09-24-2018 9:30am - Initial Scaffolding
+

@@ -1,0 +1,13 @@
+<%- include('../../partials/header'); -%>
+<%- include('../../partials/nav') -%>
+<h1 class="form__header">Search for new books</h1>
+<form action="/search_request" method="get">
+  <label class="label" for="inpQuery">Enter a title or author</label>
+  <input class="input" placeholder="Enter a title or author" type="text" name="q" id="inpQuery">
+  <label class="label  visible" for="rdioAuthor">Author</label>
+  <input class="input  --wide" type="radio" name="inauthor" id="rdioAuthor">
+  <label class="label  visible" for="rdioTitle">Title</label>
+  <input class="input  --wide" type="radio" name="intitle" id="rdioTitle">
+  <input class="btn" type="submit" value="Search">
+</form>
+<%- include('../../partials/footer'); -%>
