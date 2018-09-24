@@ -41,22 +41,32 @@ EJS, Node, Express, Postgresql
 
 ## Conflict Plan
 
-# What will your group do when it encounters conflict?
+What will your group do when it encounters conflict?
+
 If we have any conflicts we will communicate it with each other right away to make sure everyone is in agreement
+
 How will you raise concerns to members who are not adequately contributing?
+
 Tasks will be divided amongst us daily. If a member is not adequately contributing we can try to redistribute workflow. Will work with that member to seek the cause and determine what is the best solution together.
+
 What is your process to resolve conflicts?
+
 Open communication and honesty. Constructive feedback.
 How and when will you escalate the conflict if your attempts are unsuccessful?
+
 If after 3 unsuccessful attempts, will escalate to Michelle.
 Communication Plan
 
-# How will you communicate after hours and on the weekend?
+How will you communicate after hours and on the weekend?
 Slack chatroom
+
 How will we handle our workload?
 Coding will occur during class time, it is not expected for a member to work on any features at home. However, if a member chooses to work on something at home they are welcome to as long as they let the rest of the team know which feature they will be working on. Anything we do we will communicate with each other.
+
 What is your strategy for ensuring everyone's voices are heard?
 Listen to everyone's opinion, setting the context and shared goals upfront to the group. Think about different learning/processing styles and bake that into the process design. Ask for everyone's oppinion before moving forward.
+
 How will you ensure that you are creating a safe environment where everyone feels comfortable speaking up?
+
 Being compassionate and understand that mistakes happen, encourage each other to speak-up so that everyone can learn, adapt, and adjust in real-time.
 Leave behind the judgement, everyone has different backgrounds and experiences.
