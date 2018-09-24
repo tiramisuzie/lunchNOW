@@ -22,10 +22,10 @@ app.post('/recipes', tasks.addDataToDb);
 //details for one object
 app.get('/recipes/:id', tasks.getDetails);
 //display form
-app.get('/new_recipe', tasks.newRecipeForm);
+app.get('/favorites', tasks.newRecipeForm);
 
-app.get('/search', tasks.searchRecipesForm);
-app.get('/search_request/', tasks.searchForRecipesExternalApi);
+app.get('/about_us', tasks.searchRecipesForm);
+app.get('/search_results/', tasks.searchForRecipesExternalApi);
 
 app.use(tasks.handle404);
 
