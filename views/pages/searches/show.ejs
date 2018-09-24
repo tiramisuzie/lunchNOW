@@ -1,0 +1,14 @@
+<%- include('../../partials/header'); -%>
+<%- include('../../partials/nav') -%>
+<% results.forEach( item =>  {%>
+<%- include('../../partials/itemFull', { book: item }); -%>
+<form action="/books" method="post">
+  <input type="hidden" name="title" value="<%= item.title %>">
+  <input type="hidden" name="author" value="<%= item.author %>">
+  <input type="hidden" name="isbn" value="<%= item.isbn %>">
+  <input type="hidden" name="image_url" value="<%= item.image_url %>">
+  <input type="hidden" name="description" value="<%= item.description %>">
+  <input type="submit" value="Save" />
+</form>
+<% }); %>
+<%- include('../../partials/footer'); -%>
