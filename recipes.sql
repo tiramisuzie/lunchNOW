@@ -1,3 +1,4 @@
+-- Create tables for our ingredients and favorite recipes, plus the cache tables to save our results
 CREATE TABLE IF NOT EXISTS ingredients(
     ingredient_id SERIAL PRIMARY KEY, 
     ingredient_desc VARCHAR(256), 
