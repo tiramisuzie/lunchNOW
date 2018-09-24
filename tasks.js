@@ -26,7 +26,10 @@ function handle404(req, res, next) {
   next(createError(404));
 }
 
-function getData() {}
+function getData(req, res, next) {
+  res.render('index');
+
+}
 //add new object to DB
 function addDataToDb() {}
 //details for one object
