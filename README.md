@@ -14,7 +14,8 @@ Lunch now is an app which helps organize the cooking process in the most effecti
 ## MVP
 As a user, I want to be able to choose the dish to cook based on available ingredients, so I have some proven algorithms to get a lunch (dinner).  
   
-As a user, I want to search for recipes based on the ingredients I have available to cook a delicious meal.  
+As a user, I want to search for recipes based on the ingredients I have available to cook a delicious meal. 
+
 As a user, I want the list of measures for product and instructions in a recipe be available both in imperial and continental scales, so I can share my favorite recipes with my friends from the whole world.  
 As a user, I want to view, add, and delete recipes to my recipe book so I can keep track of all the recipes I enjoy or hate.  
 As a developer I want to use unlimited power of full-stack application, so I can interact with external APIs, store data on server side in DB, and use templating engines to deliver consistent experience for the user.  
