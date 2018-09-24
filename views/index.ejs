@@ -1,0 +1,26 @@
+<%- include('partials/header'); -%>
+
+<header class="clearfix">
+  <section class="heading-group-h1">
+    <h1>
+      Lunch Now.
+    </h1>
+    <h2>The shocking power of back-end engines</h2>
+  </section>
+  <%- include('partials/nav') -%>
+</header>
+<main>
+  <section>
+    <h2>All Recipes (
+      <%=count %> stored )</h2>
+    <div>
+      <% recipes.forEach( recipe =>  {%>
+      <%- include('partials/itemShort', { recipe:recipe }); -%>
+      <form action="/recipe/<%= recipe.id %>" method="get">
+        <input type="submit" value="Details" />
+      </form>
+      <% }); %>
+    </div>
+  </section>
+</main>
+<%- include('partials/footer'); -%>
