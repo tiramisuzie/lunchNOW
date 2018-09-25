@@ -32,7 +32,8 @@ function getRandomFromRange(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function databaseInsert(apiResponse) {
+function dbCacheInsert(apiResponse) {
+  wipeTables();
   let recipes = apiResponse.body.hits.map(recipe => {
     return {
       id:            recipe.recipe.uri.slice(-32),
@@ -82,7 +83,7 @@ function getData(req, res, next) {
   }&app_key=${process.env.ApplicationKey}&to=${howMuchToShow}`;
   console.log(url);
   superagent.get(url).end((err, apiResponse) => {
-    let recipesToRender = databaseInsert(apiResponse);
+    let recipesToRender = dbCacheInsert(apiResponse);
     res.render('index', { recipes: recipesToRender });
   })
 }
@@ -122,7 +123,7 @@ function searchForRecipesExternalApi(request, response) {
 
   superagent.get(`https://api.edamam.com/search?q=${request.query.searchBar}&app_id=${process.env.ApplicationID}&app_key=${process.env.ApplicationKey}`)
     .end( (err, apiResponse) => {
-      let recipesToRender = databaseInsert(apiResponse);
+      let recipesToRender = dbCacheInsert(apiResponse);
       response.render('./pages/searches/results', { recipes: recipesToRender });
     });
 }
