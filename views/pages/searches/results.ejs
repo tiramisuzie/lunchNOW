@@ -1,15 +1,20 @@
 <%- include('../../partials/header'); -%>
-<%- include('../../partials/nav') -%>
-<% results.forEach( item =>  {%>
-<%- include('../../partials/itemFull', { book: item }); -%>
-<form action="/books" method="post">
-  <input type="hidden" name="title" value="<%= item.title %>">
-  <input type="hidden" name="image_url" value="<%= item.image_url %>">
-  <input type="hidden" name="directions_url" value="<%= item.directions_url %>">
-  <input type="hidden" name="source_title" value="<%= item.source_title %>">
-  <input type="hidden" name="calories" value="<%= item.calories %>">
-  <input type="hidden" name="total_time" value="<%= item.total_time %>">
-  <input type="submit" value="Save" />
-</form>
+
+
+
+<% recipes.forEach( recipe => { %>
+<div>
+  <form action="/recipes" method="post">
+    <input type="hidden" name="title" value="<%= recipe.title %>">
+    <input type="hidden" name="image_url" value="<%= recipe.image_url %>">
+    <input type="hidden" name="directions_url" value="<%= recipe.directions_url %>">
+    <input type="hidden" name="source_title" value="<%= recipe.source_title %>">
+    <input type="hidden" name="calories" value="<%= recipe.calories %>">
+    <input type="hidden" name="total_time" value="<%= recipe.total_time %>">
+    <img src = "<%= recipe.image_url %>"/>
+    <input type="submit" value="Save" />
+    
+  </form>
+</div>
 <% }); %>
 <%- include('../../partials/footer'); -%>

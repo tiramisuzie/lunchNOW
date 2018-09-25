@@ -62,7 +62,23 @@ function getData(req, res, next) {
 }
 
 //add new object to DB
-function addDataToDb() {}
+function addDataToDb(req, res) {
+  console.log('post');
+  console.log(req.body);
+  let SQL = `INSERT INTO favoriteRecipes (title, image_url, directions_url, source_title, calories, total_time) SELECT  title, image_url, directions_url, source_title, calories, total_time FROM resultsCache WHERE resultsRecipe_id = ${
+    req.body.recipe_id
+  } RETURNING favoriteRecipe_id;`;
+
+  client.query(SQL, values).then(data => {
+    console.log(data.rows[0].favoriteRecipe_id);
+    let SQL = `INSERT INTO ingredients (recipe_ref_id, ingredient_desc) SELECT recipe_ref_id, ingredient_desc FROM ingredientsCache WHERE recipe_ref_id = ${
+      req.body.recipe_id
+    };`;
+
+    client.query(SQL, values);
+  });
+  // response.render('./')
+}
 //details for one object
 function getDetails() {}
 
