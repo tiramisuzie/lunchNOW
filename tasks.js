@@ -60,11 +60,11 @@ function dbCacheInsert(apiResponse) {
     ];
 
     client.query(SQL, values).then(data => {
-      console.log(data.rows[0]);
+      console.log(data.rows[0].resultsrecipe_id);
       recipe.ingredients.forEach(ing => {
         let SQL =
           'INSERT INTO ingredientsCache(recipe_ref_id, ingredient_desc) VALUES($1, $2);';
-        let values = [data.rows[0].resultsRecipe_id, ing];
+        let values = [data.rows[0].resultsrecipe_id, ing];
         client.query(SQL, values);
       });
     });
