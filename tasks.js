@@ -56,7 +56,34 @@ function getData(req, res, next) {
         ingredients: recipe.recipe.ingredientLines
       };
     });
-    res.send(recipes);
+    recipes.forEach(recipe => {
+      let SQL =
+        'INSERT INTO resultsCache(title, image_url, directions_url, source_title, calories, total_time) VALUES($1, $2, $3, $4, $5, $6) RETURNING resultsRecipe_id;';
+      let values = [
+        recipe.title,
+        recipe.image_url,
+        recipe.directions_url,
+        recipe.source_title,
+        recipe.calories,
+        recipe.total_time
+      ];
+
+      client.query(SQL, values).then(data => {
+        console.log(data.rows[0]);
+        recipe.ingredients.forEach(ing => {
+          let SQL =
+            'INSERT INTO ingredientsCache(recipe_ref_id, ingredient_desc) VALUES($1, $2);';
+          let values = [data.rows[0].resultsrecipe_id, ing];
+          client.query(SQL, values).then(dataIng => {
+            res.render('index', {
+              recipes: recipes,
+              recipeId: data.rows[0].resultsrecipe_id
+            });
+          });
+        });
+      });
+    });
+    // res.send(recipes);
     // res.render('index', { recipes: apiResponse.body });
   });
 }
