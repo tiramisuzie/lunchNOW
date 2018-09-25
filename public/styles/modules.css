@@ -11,9 +11,12 @@ a, a:visited {
   font-family: 'Merriweather Sans', sans-serif;
   font-size: .75em;
   margin-right: 0.4em;
-  padding: 5em;
-  font-style: bold;
+  padding: .5em 5em;
+
   color: black;
+}
+a:hover {
+  font-weight: 300;
 }
 
 .nav-container {
@@ -21,6 +24,7 @@ a, a:visited {
   border-bottom: 1.5px solid black;
   border-top: 1.5px solid black;
   text-align: center;
+  padding: .5em;
 }
 /* nav {
   padding: 0.1em;
