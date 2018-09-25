@@ -23,10 +23,7 @@ nav:hover ul {
 }
 
 nav li {
-  margin-right: 0.4em;
-  font-size: 1.5em;
-  padding: 0.5em 0.2em;
-  border-bottom: 1px solid #ccc;
+ background-color: white;
 }
 
 /* === MEDIA OBJ FORMATTING === */

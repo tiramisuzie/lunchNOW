@@ -1,0 +1,21 @@
+a, a:visited {
+  text-decoration: none;
+  font-family: 'Merriweather Sans', sans-serif;
+  font-size: .6em;
+  margin-right: 0.4em;
+  padding: 0.5em 0.2em;
+  border-bottom: 1.5px solid black;
+  border-top: 1.5px solid black;
+}
+
+h1 {
+  text-align: center;
+  font-size: 2.5em;
+  font-family: 'Abril Fatface', cursive;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 1.5em;
+  font-family: 'Dancing Script', cursive;
+}

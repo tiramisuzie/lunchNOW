@@ -22,7 +22,7 @@ app.post('/recipes', tasks.addDataToDb);
 // //details for one object
 // app.get('/recipes/:id', tasks.getDetails);
 // //display form
-// app.get('/favorites', tasks.newRecipeForm);
+app.get('/favorites', tasks.getData);
 
 // app.get('/about_us', tasks.searchRecipesForm);
 app.get('/search_results/', tasks.searchForRecipesExternalApi);
