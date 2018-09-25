@@ -32,6 +32,46 @@ function getRandomFromRange(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+function dbCacheInsert(apiResponse) {
+  wipeTables();
+  let recipes = apiResponse.body.hits.map(recipe => {
+    return {
+      id:            recipe.recipe.uri.slice(-32),
+      title:         recipe.recipe.label,
+      image_url:     recipe.recipe.image,
+      directions_url:recipe.recipe.url,
+      source_title:  recipe.recipe.source,
+      calories:      Math.round(recipe.recipe.calories),
+      total_time:    recipe.recipe.totalTime,
+      ingredients:   recipe.recipe.ingredientLines
+    }});
+
+  recipes.forEach( (recipe, index) => {
+    let SQL = 'INSERT INTO resultsCache(title, image_url, directions_url, source_title, calories, total_time, resultsRecipe_id) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING resultsRecipe_id;'
+
+    let values = [
+      recipe.title,
+      recipe.image_url,
+      recipe.directions_url,
+      recipe.source_title,
+      recipe.calories,
+      recipe.total_time,
+      recipe.id
+    ];
+
+    client.query(SQL, values).then(data => {
+      console.log(data.rows[0]);
+      recipe.ingredients.forEach(ing => {
+        let SQL =
+          'INSERT INTO ingredientsCache(recipe_ref_id, ingredient_desc) VALUES($1, $2);';
+        let values = [data.rows[0].resultsRecipe_id, ing];
+        client.query(SQL, values);
+      });
+    });
+  });
+  return recipes;
+}
+
 function getData(req, res, next) {
   let randomIngredient = getRandomFromRange(ingredientList.ingredients).replace(
     /\s/g,
@@ -43,46 +83,8 @@ function getData(req, res, next) {
   }&app_key=${process.env.ApplicationKey}&to=${howMuchToShow}`;
   console.log(url);
   superagent.get(url).end((err, apiResponse) => {
-
-
-    let recipes = apiResponse.body.hits.map(recipe => {
-
-      return {
-        id:            recipe.recipe.uri.slice(-32),
-        title:         recipe.recipe.label,
-        image_url:     recipe.recipe.image,
-        directions_url:recipe.recipe.url,
-        source_title:  recipe.recipe.source,
-        calories:      Math.round(recipe.recipe.calories),
-        total_time:    recipe.recipe.totalTime,
-        ingredients:   recipe.recipe.ingredientLines
-      }});
-
-    recipes.forEach( (recipe, index) => {
-      let SQL = 'INSERT INTO resultsCache(title, image_url, directions_url, source_title, calories, total_time, resultsRecipe_id) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING resultsRecipe_id;'
-
-      let values = [
-        recipe.title,
-        recipe.image_url,
-        recipe.directions_url,
-        recipe.source_title,
-        recipe.calories,
-        recipe.total_time,
-        recipe.id
-      ];
-
-      client.query(SQL, values).then(data => {
-        console.log(data.rows[0]);
-        recipe.ingredients.forEach(ing => {
-          let SQL =
-            'INSERT INTO ingredientsCache(recipe_ref_id, ingredient_desc) VALUES($1, $2);';
-          let values = [data.rows[0].resultsRecipe_id, ing];
-          client.query(SQL, values);
-        });
-      });
-    });
-    // res.send(recipes);
-    res.render('index', { recipes: recipes });
+    let recipesToRender = dbCacheInsert(apiResponse);
+    res.render('index', { recipes: recipesToRender });
   })
 }
 
@@ -105,6 +107,15 @@ function addDataToDb(req, res) {
 
   })
 }
+
+//truncate tables
+function wipeTables() {
+  let SQL = 'TRUNCATE ingredientscache, resultscache;'
+  client.query(SQL).then( () => {
+    console.log('cache tables truncated');
+  })
+}
+
 //details for one object
 function getDetails() {}
 
@@ -114,45 +125,8 @@ function searchForRecipesExternalApi(request, response) {
 
   superagent.get(`https://api.edamam.com/search?q=${request.query.searchBar}&app_id=${process.env.ApplicationID}&app_key=${process.env.ApplicationKey}`)
     .end( (err, apiResponse) => {
-
-
-      let recipes = apiResponse.body.hits.map(recipe => {
-
-        return {
-          id:            recipe.recipe.uri.slice(-32),
-          title:         recipe.recipe.label,
-          image_url:     recipe.recipe.image,
-          directions_url:recipe.recipe.url,
-          source_title:  recipe.recipe.source,
-          calories:      Math.round(recipe.recipe.calories),
-          total_time:    recipe.recipe.totalTime,
-          ingredients:   recipe.recipe.ingredientLines
-        }});
-
-      recipes.forEach( (recipe, index) => {
-        let SQL = 'INSERT INTO resultsCache(title, image_url, directions_url, source_title, calories, total_time, resultsRecipe_id) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING resultsRecipe_id;'
-
-        let values = [
-          recipe.title,
-          recipe.image_url,
-          recipe.directions_url,
-          recipe.source_title,
-          recipe.calories,
-          recipe.total_time,
-          recipe.id
-        ];
-
-        client.query(SQL, values).then(data => {
-          console.log(data.rows[0]);
-          recipe.ingredients.forEach(ing => {
-            let SQL =
-              'INSERT INTO ingredientsCache(recipe_ref_id, ingredient_desc) VALUES($1, $2);';
-            let values = [data.rows[0].resultsRecipe_id, ing];
-            client.query(SQL, values);
-          });
-        });
-      });
-      response.render('./pages/searches/results', { recipes: recipes });
+      let recipesToRender = dbCacheInsert(apiResponse);
+      response.render('./pages/searches/results', { recipes: recipesToRender });
     });
 }
 
