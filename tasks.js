@@ -50,16 +50,18 @@ function getData(req, res, next) {
 function addDataToDb(req, res) {
   console.log('post');
   console.log(req.body);
-  let SQL = `INSERT INTO favoriteRecipes (title, image_url, directions_url, source_title, calories, total_time) SELECT  title, image_url, directions_url, source_title, calories, total_time FROM resultsCache WHERE resultsRecipe_id = ${req.body.recipe_id} RETURNING favoriteRecipe_id;`;
+  let SQL = `INSERT INTO favoriteRecipes (favoriteRecipe_id, title, image_url, directions_url, source_title, calories, total_time) 
+  SELECT resultsRecipe_id, title, image_url, directions_url, source_title, calories, total_time 
+  FROM resultsCache 
+  WHERE resultsRecipe_id = '${req.body.recipe_id}';`;
 
+  client.query(SQL).then(data => {
+    console.log('First passed');
+    let SQL = `INSERT INTO ingredients (recipe_ref_id, ingredient_desc) SELECT recipe_ref_id, ingredient_desc FROM ingredientsCache WHERE recipe_ref_id = '${req.body.recipe_id}';`;
 
-  client.query(SQL, values).then(data => {
-    console.log(data.rows[0].favoriteRecipe_id);
-    let SQL = `INSERT INTO ingredients (recipe_ref_id, ingredient_desc) SELECT recipe_ref_id, ingredient_desc FROM ingredientsCache WHERE recipe_ref_id = ${req.body.recipe_id};`;
-
-    client.query(SQL, values);
+    client.query(SQL).then(_ => res.body.saved = true);
   })
-  // response.render('./')
+
 }
 //details for one object
 function getDetails() {}
@@ -71,10 +73,10 @@ function searchForRecipesExternalApi(request, response) {
   superagent.get(`https://api.edamam.com/search?q=${request.query.searchBar}&app_id=${process.env.ApplicationID}&app_key=${process.env.ApplicationKey}`)
     .end( (err, apiResponse) => {
 
-
       let recipes = apiResponse.body.hits.map(recipe => {
-        // console.log(recipe);
+
         return {
+          id:            recipe.recipe.uri.slice(-32),
           title:         recipe.recipe.label,
           image_url:     recipe.recipe.image,
           directions_url:recipe.recipe.url,
@@ -84,14 +86,8 @@ function searchForRecipesExternalApi(request, response) {
           ingredients:   recipe.recipe.ingredientLines
         }});
 
-
-      // let ingredients = apiResponse.body.hits.map( recipe => {
-      //   console.log(recipe);
-      //   return recipe.ingredients.map( ing => ing.text)
-      // });
-
-      recipes.forEach( (recipe) => {
-        let SQL = 'INSERT INTO resultsCache(title, image_url, directions_url, source_title, calories, total_time) VALUES($1, $2, $3, $4, $5, $6) RETURNING resultsRecipe_id;'
+      recipes.forEach( (recipe, index) => {
+        let SQL = 'INSERT INTO resultsCache(title, image_url, directions_url, source_title, calories, total_time, resultsRecipe_id) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING resultsRecipe_id;'
 
         let values = [
           recipe.title,
@@ -99,7 +95,8 @@ function searchForRecipesExternalApi(request, response) {
           recipe.directions_url,
           recipe.source_title,
           recipe.calories,
-          recipe.total_time
+          recipe.total_time,
+          recipe.id
         ];
 
         client.query(SQL,values).then(data => {

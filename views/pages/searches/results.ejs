@@ -5,12 +5,7 @@
 <% recipes.forEach( recipe => { %>
 <div>
   <form action="/recipes" method="post">
-    <input type="hidden" name="title" value="<%= recipe.title %>">
-    <input type="hidden" name="image_url" value="<%= recipe.image_url %>">
-    <input type="hidden" name="directions_url" value="<%= recipe.directions_url %>">
-    <input type="hidden" name="source_title" value="<%= recipe.source_title %>">
-    <input type="hidden" name="calories" value="<%= recipe.calories %>">
-    <input type="hidden" name="total_time" value="<%= recipe.total_time %>">
+    <input type="hidden" name="recipe_id" value="<%= recipe.id %>">  
     <img src = "<%= recipe.image_url %>"/>
     <input type="submit" value="Save" />
     

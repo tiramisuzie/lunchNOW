@@ -18,7 +18,7 @@ app.get('/', (req, res) => res.redirect('/recipes'));
 // //grabbing and returning all objects from database
 app.get('/recipes', tasks.getData);
 // //add new object to DB
-// app.post('/recipes', tasks.addDataToDb);
+app.post('/recipes', tasks.addDataToDb);
 // //details for one object
 // app.get('/recipes/:id', tasks.getDetails);
 // //display form
