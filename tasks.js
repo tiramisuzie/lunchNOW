@@ -40,23 +40,27 @@ function searchForRecipesExternalApi(request, response) {
   console.log(request.query.searchBar);
   superagent.get(`https://api.edamam.com/search?q=${request.query.searchBar}&app_id=${process.env.ApplicationID}&app_key=${process.env.ApplicationKey}`)
     .end( (err, apiResponse) => {
-      console.log(apiResponse.body);
 
-      let recipes = apiResponse.body.hits.map(recipe => ({
-        title:         recipe.label,
-        image_url:     recipe.image,
-        directions_url:recipe.url,
-        source_title:  recipe.source,
-        calories:      recipe.calories,
-        total_time:    recipe.totalTime
-      }));
+
+      let recipes = apiResponse.body.hits.map(recipe => {
+        // console.log(recipe);
+        return {
+          title:         recipe.recipe.label,
+          image_url:     recipe.recipe.image,
+          directions_url:recipe.recipe.url,
+          source_title:  recipe.recipe.source,
+          calories:      Math.round(recipe.recipe.calories),
+          total_time:    recipe.recipe.totalTime,
+          ingredients:   recipe.recipe.ingredientLines
+        }});
+
 
       // let ingredients = apiResponse.body.hits.map( recipe => {
       //   console.log(recipe);
       //   return recipe.ingredients.map( ing => ing.text)
       // });
 
-      recipes.forEach( (recipe, ndx) => {
+      recipes.forEach( (recipe) => {
         let SQL = 'INSERT INTO resultsCache(title, image_url, directions_url, source_title, calories, total_time) VALUES($1, $2, $3, $4, $5, $6) RETURNING resultsRecipe_id;'
         let values = [
           recipe.title,
@@ -67,9 +71,10 @@ function searchForRecipesExternalApi(request, response) {
           recipe.total_time
         ];
         client.query(SQL,values).then(data => {
-          apiResponse.body.hits.recipe.ingredientLines[ndx].forEach(ing => {
+          console.log(data.rows[0]);
+          recipe.ingredients.forEach(ing => {
             let SQL = 'INSERT INTO ingredientsCache(recipe_ref_id, ingredient_desc) VALUES($1, $2);'
-            let values = [data.rows[0].resultsRecipe_id, ing.text];
+            let values = [data.rows[0].resultsrecipe_id, ing];
             client.query(SQL, values);
           })
         })
