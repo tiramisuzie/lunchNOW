@@ -2,10 +2,7 @@
 
 <header class="clearfix">
   <section class="heading-group-h1">
-    <h1>
-      Lunch Now
-    </h1>
-    <h2>The shocking power of back-end engines</h2>
+    <h1>Lunch Now</h1>
   </section>
   <%- include('partials/nav') -%>
 </header>
@@ -16,6 +13,16 @@
     </form>
   <section>
     <h2>All Recipes </h2>
+    <% recipes.forEach( recipe => { %>
+      <div>
+        <form action="/recipes" method="post">
+          <input type="hidden" name="recipe_id" value="<%= recipe.id %>">  
+          <img src = "<%= recipe.image_url %>"/>
+          <input type="submit" value="Save" />
+          
+        </form>
+      </div>
+      <% }); %>
     
   </section>
 </main>
