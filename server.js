@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.static('./public'));
 
-// app.get('/', tasks.reqDataFromExtAPI);
+app.get('/', (req, res) => res.redirect('/recipes'));
 
 // //grabbing and returning all objects from database
 app.get('/recipes', tasks.getData);
