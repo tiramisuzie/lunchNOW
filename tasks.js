@@ -1,6 +1,7 @@
 const pg = require('pg');
-const validator = require('validator');
+// const validator = require('validator');
 const superagent = require('superagent');
+const ingredients = require('./ingredients');
 var createError = require('http-errors');
 const client = new pg.Client(process.env.DATABASE_URL);
 client.connect();
@@ -26,10 +27,25 @@ function handle404(req, res, next) {
   next(createError(404));
 }
 
-function getData(req, res, next) {
-  res.render('index');
-
+function getRandomFromRange(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
 }
+
+function getData(req, res, next) {
+  superagent
+    .get(
+      `https://api.edamam.com/search?q=${getRandomFromRange(
+        ingredients
+      )}&app_key=${process.env.ApplicationKey}&app_id=${
+        process.env.ApplicationID
+      }&to=3`
+    )
+    .end((err, apiResponse) => {
+      console.log(apiResponse.body);
+    });
+  res.render('index');
+}
+
 //add new object to DB
 function addDataToDb() {}
 //details for one object
@@ -38,6 +54,7 @@ function getDetails() {}
 //display API results from queried items
 function searchForRecipesExternalApi(request, response) {
   console.log(request.query.searchBar);
+
   superagent.get(`https://api.edamam.com/search?q=${request.query.searchBar}&app_id=${process.env.ApplicationID}&app_key=${process.env.ApplicationKey}`)
     .end( (err, apiResponse) => {
 
@@ -70,16 +87,17 @@ function searchForRecipesExternalApi(request, response) {
           recipe.calories,
           recipe.total_time
         ];
+
         client.query(SQL,values).then(data => {
           console.log(data.rows[0]);
           recipe.ingredients.forEach(ing => {
             let SQL = 'INSERT INTO ingredientsCache(recipe_ref_id, ingredient_desc) VALUES($1, $2);'
             let values = [data.rows[0].resultsrecipe_id, ing];
             client.query(SQL, values);
-          })
-        })
-      })
-      response.render('./pages/searches/results', {recipes: recipes});
+          });
+        });
+      });
+      response.render('./pages/searches/results', { recipes: recipes });
     });
 }
 
