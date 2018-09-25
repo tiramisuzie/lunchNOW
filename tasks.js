@@ -100,7 +100,7 @@ function addDataToDb(req, res) {
     console.log('First passed');
     let SQL = `INSERT INTO ingredients (recipe_ref_id, ingredient_desc) SELECT recipe_ref_id, ingredient_desc FROM ingredientsCache WHERE recipe_ref_id = '${req.body.recipe_id}';`;
 
-    client.query(SQL).then(_ => res.body.saved = true);
+    // client.query(SQL).then(_ => res.body.saved = true);
   })
 }
 //details for one object
