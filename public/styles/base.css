@@ -17,3 +17,10 @@ html {
 * {
   box-sizing: inherit;
 }
+
+h1 {
+  text-align: center;
+  font-size: 2em;
+  padding: 20px;
+  font-family: 'Galindo', cursive;
+}
