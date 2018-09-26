@@ -94,7 +94,6 @@ Recipe.prototype.updateRecord = function(callback) {
 
 
 let handleFavorites = function(event) {
-
   event.preventDefault();
   $.ajax({
     url: `/recipes`,
@@ -111,4 +110,3 @@ let handleFavorites = function(event) {
 };
 
 $('.media-obj__button').on('click', handleFavorites);
-

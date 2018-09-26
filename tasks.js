@@ -187,7 +187,7 @@ function wipeTables() {
 // }
 
 //display API results from queried items
-function searchForRecipesExternalApi(request, response) {
+function searchForRecipesExternalApi(request, response, next) {
   console.log(request.query.searchBar);
 
   superagent
@@ -197,10 +197,14 @@ function searchForRecipesExternalApi(request, response) {
       }&app_key=${process.env.ApplicationKey}`
     )
     .end((err, apiResponse) => {
-      // let recipesToRender = dbCacheInsert(apiResponse);
-      dbCacheInsert(apiResponse).then(recipes =>
-        response.render('./pages/searches/results', { recipes: recipes })
-      );
+      if(err) {
+        next(createError(err));
+      } else {
+        let recipesToRender = dbCacheInsert(apiResponse);
+        console.log(recipesToRender);
+        response.render('./pages/searches/results', { recipes: recipesToRender, returnedFromApi: recipesToRender });
+      }
+
     });
 }
 function handleDataManipulationRequest(req, res, next) {
