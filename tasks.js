@@ -191,7 +191,8 @@ function searchForRecipesExternalApi(request, response) {
         next(createError(err));
       } else {
         let recipesToRender = dbCacheInsert(apiResponse);
-        response.render('./pages/searches/results', { recipes: recipesToRender, returnedFromApi:true });
+        console.log(recipesToRender);
+        response.render('./pages/searches/results', { recipes: recipesToRender, returnedFromApi: recipesToRender });
       }
 
     });

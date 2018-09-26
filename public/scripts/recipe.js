@@ -92,17 +92,17 @@ Recipe.prototype.updateRecord = function(callback) {
   });
 };
 
-// let addToFavorites = function(event) {
-//   event.preventDefault();
-//   $.ajax({
-//     url: `/recipes`,
-//     method: 'POST',
-//     data: {
-//       recipe_id: this.id
-//     }
-//   }).then((resp, status, xhr) => {
-//     console.log(JSON.parse(xhr.responseText));
-//   });
-// };
+let addToFavorites = function(event) {
+  event.preventDefault();
+  $.ajax({
+    url: `/recipes`,
+    method: 'POST',
+    data: {
+      recipe_id: this.id
+    }
+  }).then((resp, status, xhr) => {
+    console.log(JSON.parse(xhr.responseText));
+  });
+};
 
-// $('form').on('submit', addToFavorites);
+$('form').on('submit', addToFavorites);
