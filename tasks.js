@@ -127,7 +127,7 @@ function addDataToDb(req, res) {
   console.log('post');
   let recipe_id = req.body.recipe_id;
   let msgForTrx = `Recipe_id #...${recipe_id.slice(-10)}: `;
-  console.log(`${msgForTrx}begin`);
+  console.log(`${msgForTrx}begin insertion`);
 
   let SQL = `INSERT INTO favoriteRecipes (
       favoriteRecipe_id, 
@@ -200,6 +200,38 @@ function searchForRecipesExternalApi(request, response) {
       );
     });
 }
+function handleDataManipulationRequest(req, res, next) {
+  let recipe_id = req.body.recipe_id;
+  checkRecordExistsInDB(recipe_id)
+    .then(data => {
+      if (data) deleteDataFromDb(req, res, next);
+      else addDataToDb(req, res, next);
+    })
+    .catch(err => next(createError(err)));
+}
+
+function deleteDataFromDb(req, res, next) {
+  let recipe_id = req.body.recipe_id;
+  let msgForTrx = `Recipe_id #...${recipe_id.slice(-10)}: `;
+  console.log(`${msgForTrx}begin deletion`);
+
+  let SQL = `delete from ingredients where recipe_ref_id = $1;`;
+  let values = [recipe_id];
+  client
+    .query(SQL, values)
+    .then(data => {
+      console.log(`${msgForTrx}deleted from ingredients ${data.rowCount}`);
+      let SQL = `delete from favoriteRecipes where favoriterecipe_id = $1;`;
+      client.query(SQL, values).then(data => {
+        console.log(
+          `${msgForTrx}deleted from favoriteRecipes ${data.rowCount}`
+        );
+        res.send(JSON.stringify({ saved: false, id: recipe_id }));
+        console.log(`${msgForTrx}end`);
+      });
+    })
+    .catch(err => next(createError(err)));
+}
 
 module.exports = {
   handleError,
@@ -208,5 +240,7 @@ module.exports = {
   getData,
   addDataToDb,
   getDetails,
-  searchForRecipesExternalApi
+  searchForRecipesExternalApi,
+  handleDataManipulationRequest,
+  deleteDataFromDb
 };
