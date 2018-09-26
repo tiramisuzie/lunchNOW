@@ -77,7 +77,7 @@ function getData(req, res, next) {
     /\s/g,
     '+'
   );
-  let howMuchToShow = 3;
+  let howMuchToShow = 9;
   let url = `https://api.edamam.com/search?q=${randomIngredient}&app_id=${
     process.env.ApplicationID
   }&app_key=${process.env.ApplicationKey}&to=${howMuchToShow}`;

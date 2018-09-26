@@ -26,6 +26,16 @@ a:hover {
   text-align: center;
   padding: .5em;
 }
+
+.searchbar {
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+  box-shadow: none;
+  border: none;
+  width: 40%;
+  margin: 0 auto;
+}
 /* nav {
   padding: 0.1em;
 }
