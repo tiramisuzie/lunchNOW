@@ -26,7 +26,7 @@ app.get('/favorites', tasks.getData);
 //TO DO: need to replace task.getData with function that will populate the favorites from the sql table to the page.
 
 // app.get('/about_us', tasks.searchRecipesForm);
-app.get('/search_results/', tasks.searchForRecipesExternalApi);
+app.get('/searches/results', tasks.searchForRecipesExternalApi);
 
 app.use(tasks.handle404);
 
