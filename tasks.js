@@ -163,6 +163,7 @@ function addDataToDb(req, res) {
       console.log(`${msgForTrx}end`);
     });
   });
+
 }
 
 //truncate tables
