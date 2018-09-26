@@ -1,5 +1,7 @@
 /* === BASE RULES === */
-
+body {
+  background-image: url("./assets/marble.jpg");
+}
 body {
   line-height: 1.5;
   font-size: 100%;
