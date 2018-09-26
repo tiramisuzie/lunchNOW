@@ -92,17 +92,23 @@ Recipe.prototype.updateRecord = function(callback) {
   });
 };
 
-let addToFavorites = function(event) {
+
+let handleFavorites = function(event) {
+
   event.preventDefault();
   $.ajax({
     url: `/recipes`,
     method: 'POST',
     data: {
-      recipe_id: this.id
+
+      recipe_id: $(this).data('recipe_id')
     }
   }).then((resp, status, xhr) => {
-    console.log(JSON.parse(xhr.responseText));
+    let respText = JSON.parse(xhr.responseText);
+    if (respText.saved) $(this).addClass('--red');
+    else $(this).removeClass('--red');
   });
 };
 
-$('form').on('submit', addToFavorites);
+$('.media-obj__button').on('click', handleFavorites);
+

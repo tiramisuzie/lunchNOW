@@ -54,10 +54,14 @@ function dbCacheInsert(apiResponse) {
       source_title: recipe.recipe.source,
       calories: Math.round(recipe.recipe.calories),
       total_time: recipe.recipe.totalTime,
-      ingredients: recipe.recipe.ingredientLines
+      ingredients: recipe.recipe.ingredientLines,
+      saved: false
     };
   });
 
+  console.log(
+    `dbCacheInsert. Get recipes from API are ${JSON.stringify(recipes)}`
+  );
   recipes.forEach((recipe, index) => {
     let SQL =
       'INSERT INTO resultsCache(title, image_url, directions_url, source_title, calories, total_time, resultsRecipe_id) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING resultsRecipe_id;';
@@ -81,7 +85,15 @@ function dbCacheInsert(apiResponse) {
       });
     });
   });
-  return recipes;
+  return Promise.all(
+    recipes.map(recipe => checkRecordExistsInDB(recipe.id))
+  ).then(data => {
+    data.forEach((elmExists, ndx) => (recipes[ndx].saved = Boolean(elmExists)));
+    console.log(
+      `dbCacheInsert. Recipes after checking DB are ${JSON.stringify(recipes)}`
+    );
+    return recipes;
+  });
 }
 
 function getData(req, res, next) {
@@ -100,20 +112,15 @@ function getData(req, res, next) {
   console.log(url);
   console.log(randomIngredients);
   superagent.get(url).end((err, apiResponse) => {
-    let recipesToRender = dbCacheInsert(apiResponse);
-    res.render('index', { recipes: recipesToRender });
+    dbCacheInsert(apiResponse).then(recipes =>
+      res.render('index', { recipes: recipes })
+    );
   });
 }
 
-function checkRecordExistsInDB(req, res) {
-  let SQL = 'select 1 from favoriteRecipes where favoriterecipe_id = $1);';
-  let recipe_id = req.body.recipe_id;
-  let values = [recipe_id];
-  client
-    .query(SQL, values)
-    .then(data =>
-      res.send(JSON.stringify({ saved: data.rowCount, id: recipe_id }))
-    );
+function checkRecordExistsInDB(values) {
+  let SQL = 'select 1 from favoriteRecipes where favoriterecipe_id = $1;';
+  return client.query(SQL, [values]).then(data => data.rowCount);
 }
 
 //add new object to DB
@@ -121,7 +128,7 @@ function addDataToDb(req, res) {
   console.log('post');
   let recipe_id = req.body.recipe_id;
   let msgForTrx = `Recipe_id #...${recipe_id.slice(-10)}: `;
-  console.log(`${msgForTrx}begin`);
+  console.log(`${msgForTrx}begin insertion`);
 
   let SQL = `INSERT INTO favoriteRecipes (
       favoriteRecipe_id, 
@@ -164,7 +171,6 @@ function addDataToDb(req, res) {
       console.log(`${msgForTrx}end`);
     });
   });
-
 }
 
 //truncate cache tables
@@ -191,9 +197,43 @@ function searchForRecipesExternalApi(request, response) {
       }&app_key=${process.env.ApplicationKey}`
     )
     .end((err, apiResponse) => {
-      let recipesToRender = dbCacheInsert(apiResponse);
-      response.render('./pages/searches/results', { recipes: recipesToRender });
+      // let recipesToRender = dbCacheInsert(apiResponse);
+      dbCacheInsert(apiResponse).then(recipes =>
+        response.render('./pages/searches/results', { recipes: recipes })
+      );
     });
+}
+function handleDataManipulationRequest(req, res, next) {
+  let recipe_id = req.body.recipe_id;
+  checkRecordExistsInDB(recipe_id)
+    .then(data => {
+      if (data) deleteDataFromDb(req, res, next);
+      else addDataToDb(req, res, next);
+    })
+    .catch(err => next(createError(err)));
+}
+
+function deleteDataFromDb(req, res, next) {
+  let recipe_id = req.body.recipe_id;
+  let msgForTrx = `Recipe_id #...${recipe_id.slice(-10)}: `;
+  console.log(`${msgForTrx}begin deletion`);
+
+  let SQL = `delete from ingredients where recipe_ref_id = $1;`;
+  let values = [recipe_id];
+  client
+    .query(SQL, values)
+    .then(data => {
+      console.log(`${msgForTrx}deleted from ingredients ${data.rowCount}`);
+      let SQL = `delete from favoriteRecipes where favoriterecipe_id = $1;`;
+      client.query(SQL, values).then(data => {
+        console.log(
+          `${msgForTrx}deleted from favoriteRecipes ${data.rowCount}`
+        );
+        res.send(JSON.stringify({ saved: false, id: recipe_id }));
+        console.log(`${msgForTrx}end`);
+      });
+    })
+    .catch(err => next(createError(err)));
 }
 
 module.exports = {
@@ -202,6 +242,9 @@ module.exports = {
   handle404,
   getData,
   addDataToDb,
-  // getDetails,
-  searchForRecipesExternalApi
+
+  searchForRecipesExternalApi,
+  handleDataManipulationRequest,
+  deleteDataFromDb
+
 };
