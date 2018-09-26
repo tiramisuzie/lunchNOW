@@ -11,3 +11,8 @@ h1 {
   font-size: 1.5em;
   font-family: 'Dancing Script', cursive;
 }
+
+iframe {width: 90%;
+    margin: 0 5%;
+    height: 90vh;
+}

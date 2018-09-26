@@ -176,8 +176,10 @@ function wipeTables() {
   });
 }
 
-//details for one object
-function getDetails() {}
+//details for one recipe to display in iframe page
+// function getDetails(request, response) {
+//   response.render('.pages/recipes/iframe', )
+// }
 
 //display API results from queried items
 function searchForRecipesExternalApi(request, response) {
@@ -201,6 +203,6 @@ module.exports = {
   handle404,
   getData,
   addDataToDb,
-  getDetails,
+  // getDetails,
   searchForRecipesExternalApi
 };

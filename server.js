@@ -20,7 +20,7 @@ app.get('/recipes', tasks.getData);
 //add new object to DB
 app.post('/recipes', tasks.addDataToDb);
 //details for one object
-app.get('/instructions', tasks.getDetails);
+app.get('/recipe-details', (req, res) => res.render('./pages/recipes/iframe', {url: req.query.url}));
 //display form
 app.get('/favorites', tasks.getData);
 //TO DO: need to replace task.getData with function that will populate the favorites from the sql table to the page.
