@@ -4,20 +4,7 @@
 <section>
   <%- include('../../partials/noresults', {recipes: recipes}); -%>
   <% recipes.forEach( recipe => { %>
-<<<<<<< HEAD
     <%- include('../../partials/itemFull', {recipe: recipe}); -%>
-=======
-  <%- include('../../partials/itemFull', {recipe: recipe}); -%>
-
-  <!-- <div>
-      <form action="/recipes" method="post">
-        <input type="hidden" name="recipe_id" value="<%= recipe.id %>">  
-        <img src = "<%= recipe.image_url %>"/>
-        <input type="submit" value="Save" />
-        
-      </form>
-    </div> -->
->>>>>>> 26eb0696cd8781ba8b0b1f0c8b40a0d949f949e5
   <% }); %>
 </section>
 

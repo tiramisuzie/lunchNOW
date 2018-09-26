@@ -9,14 +9,9 @@
 
 
   <section>
-<<<<<<< HEAD
-=======
-    <h2>All Recipes </h2>
     <%- include('partials/noresults', {recipes: recipes}); -%>
->>>>>>> 26eb0696cd8781ba8b0b1f0c8b40a0d949f949e5
     <% recipes.forEach( recipe => { %>
     <%- include('partials/itemFull', {recipe: recipe}); -%>
-
     <% }); %>
 
   </section>

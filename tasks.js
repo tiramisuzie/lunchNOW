@@ -258,10 +258,6 @@ module.exports = {
   addDataToDb,
   searchForRecipesExternalApi,
   handleDataManipulationRequest,
-<<<<<<< HEAD
   deleteDataFromDb,
   renderFavoriteRecipes
-=======
-  deleteDataFromDb
->>>>>>> 26eb0696cd8781ba8b0b1f0c8b40a0d949f949e5
 };
