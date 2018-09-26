@@ -177,7 +177,7 @@ function wipeTables() {
 function getDetails() {}
 
 //display API results from queried items
-function searchForRecipesExternalApi(request, response) {
+function searchForRecipesExternalApi(request, response, next) {
   console.log(request.query.searchBar);
 
   superagent
@@ -186,7 +186,7 @@ function searchForRecipesExternalApi(request, response) {
         process.env.ApplicationID
       }&app_key=${process.env.ApplicationKey}`
     )
-    .end((err, apiResponse, next) => {
+    .end((err, apiResponse) => {
       if(err) {
         next(createError(err));
       } else {
