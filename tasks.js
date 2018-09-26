@@ -71,7 +71,7 @@ function dbCacheInsert(apiResponse) {
       recipe.total_time,
       recipe.id
     ];
-
+    console.log('cache table inserted');
     client.query(SQL, values).then(data => {
       recipe.ingredients.forEach(ing => {
         let SQL =
@@ -117,20 +117,6 @@ function checkRecordExistsInDB(req, res) {
 //add new object to DB
 function addDataToDb(req, res) {
   console.log('post');
-<<<<<<< HEAD
-
-  let SQL = `INSERT INTO favoriteRecipes (favoriteRecipe_id, title, image_url, directions_url, source_title, calories, total_time) 
-  SELECT resultsRecipe_id, title, image_url, directions_url, source_title, calories, total_time 
-  FROM resultsCache 
-  WHERE resultsRecipe_id = '${req.body.recipe_id}';`;
-
-  client.query(SQL).then(data => {
-    console.log('First passed');
-    let SQL = `INSERT INTO ingredients (recipe_ref_id, ingredient_desc) SELECT recipe_ref_id, ingredient_desc FROM ingredientsCache WHERE recipe_ref_id = '${req.body.recipe_id}';`;
-
-    // client.query(SQL).then(_ => res.body.saved = true);
-  })
-=======
   let recipe_id = req.body.recipe_id;
   let msgForTrx = `Recipe_id #...${recipe_id.slice(-10)}: `;
   console.log(`${msgForTrx}begin`);
@@ -177,7 +163,6 @@ function addDataToDb(req, res) {
     });
   });
 
->>>>>>> 09308abc604a2b572109f7b0550a335a5ad5a97b
 }
 
 //truncate cache tables
