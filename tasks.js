@@ -46,6 +46,8 @@ function getRandomFromRange(arr, numberElmToChoose) {
 //insert search results and random index recipes to cache tables
 function dbCacheInsert(apiResponse) {
   wipeTables();
+  console.log(apiResponse.body);
+  if (Object.keys(apiResponse.body).length === 0) return Promise.resolve([]);
   let recipes = apiResponse.body.hits.map(recipe => {
     return {
       id: recipe.recipe.uri.slice(-32),
@@ -60,9 +62,6 @@ function dbCacheInsert(apiResponse) {
     };
   });
 
-  console.log(
-    `dbCacheInsert. Get recipes from API are ${JSON.stringify(recipes)}`
-  );
   recipes.forEach((recipe, index) => {
     let SQL =
       'INSERT INTO resultsCache(title, image_url, directions_url, source_title, calories, total_time, resultsRecipe_id) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING resultsRecipe_id;';
@@ -90,16 +89,12 @@ function dbCacheInsert(apiResponse) {
     recipes.map(recipe => checkRecordExistsInDB(recipe.id))
   ).then(data => {
     data.forEach((elmExists, ndx) => (recipes[ndx].saved = Boolean(elmExists)));
-    console.log(
-      `dbCacheInsert. Recipes after checking DB are ${JSON.stringify(recipes)}`
-    );
     return recipes;
   });
 }
 
 //randomly use ingredients from array to generate recipes to display on index
 function getData(req, res, next) {
-
   let howMuchToShow = 3;
   let howMuchIngredients = 2;
   let randomIngredients = getRandomFromRange(
@@ -108,7 +103,6 @@ function getData(req, res, next) {
   );
   let queryStringForApi = randomIngredients.join(' ').replace(/\s/g, '+');
   let url = `https://api.edamam.com/search?q=${queryStringForApi}&app_id=${
-
     process.env.ApplicationID
   }&app_key=${process.env.ApplicationKey}&to=${howMuchToShow}`;
   console.log(url);
@@ -212,14 +206,15 @@ function searchForRecipesExternalApi(request, response, next) {
       }&app_key=${process.env.ApplicationKey}`
     )
     .end((err, apiResponse) => {
-      if(err) {
+      if (err) {
         next(createError(err));
       } else {
-        let recipesToRender = dbCacheInsert(apiResponse);
-        console.log(recipesToRender);
-        response.render('./pages/searches/results', { recipes: recipesToRender, returnedFromApi: recipesToRender });
+        dbCacheInsert(apiResponse).then(recipes =>
+          response.render('./pages/searches/results', {
+            recipes: recipes
+          })
+        );
       }
-
     });
 }
 function handleDataManipulationRequest(req, res, next) {
@@ -263,6 +258,10 @@ module.exports = {
   addDataToDb,
   searchForRecipesExternalApi,
   handleDataManipulationRequest,
+<<<<<<< HEAD
   deleteDataFromDb,
   renderFavoriteRecipes
+=======
+  deleteDataFromDb
+>>>>>>> 26eb0696cd8781ba8b0b1f0c8b40a0d949f949e5
 };
