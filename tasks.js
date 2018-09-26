@@ -119,6 +119,12 @@ function checkRecordExistsInDB(values) {
   return client.query(SQL, [values]).then(data => data.rowCount);
 }
 
+//query ingredients for favorite recipes to render favorites page with ingredients
+function retrieveIngredientsForFavoriteRecipe(values) {
+  let SQL = 'SELECT ingredient_desc FROM ingredients WHERE recipe_ref_id = $1;';
+  return client.query(SQL, [values]);
+}
+
 //add new object to DB
 function addDataToDb(req, res) {
   console.log('post');
@@ -170,16 +176,22 @@ function addDataToDb(req, res) {
 }
 
 //render favorite recipes page from favorites table
-function renderFavoriteRecipes(request, response) {
-  let SQL = 'SELECT * FROM favoriterecipes;'
+function renderFavoriteRecipes(request, response, next) {
+  let SQL = `SELECT * FROM favoriterecipes;`
+
   client.query(SQL, (err, result) => {
     if(err) {
       console.error(err);
       response.redirect('/error');
-    }else{
-      response.render(`./pages/recipes/favorites`, { recipes: result.rows });
-    }
-  });
+    } else{
+      Promise.all(
+        result.rows.map(recipe => retrieveIngredientsForFavoriteRecipe(recipe.favoriterecipe_id))
+      ).then(data => {
+        data.forEach((ingredients, ndx) => (result.rows[ndx].ingredients = ingredients));
+        response.render(`./pages/recipes/favorites`, { recipes: result.rows });
+      })
+        .catch(err => next(createError(err)));
+    }})
 }
 
 //truncate cache tables
