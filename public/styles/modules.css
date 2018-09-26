@@ -42,7 +42,7 @@ a:hover {
 
 /* =========== Media object ============*/
 .media-obj {
-  box-shadow: 2px 2px 4px 4px #29506d;
+  box-shadow: 1px 1px 2px 2px #29506d;
   width: 80vw;
   margin: 1em auto;
   padding: 1em;

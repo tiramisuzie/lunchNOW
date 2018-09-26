@@ -1,11 +1,10 @@
 /* === BASE RULES === */
-body {
-  background-image: url("./assets/marble.jpg");
-}
+
 body {
   line-height: 1.5;
   font-size: 100%;
   color: #313131;
+  background-image: url("./assets/marble.jpg");
 }
 
 main {
