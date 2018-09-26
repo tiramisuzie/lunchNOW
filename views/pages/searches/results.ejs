@@ -2,11 +2,11 @@
 <%- include('../../partials/nav'); -%>
 
 <section>
-  <%- include('../../partials/noresults'); -%>
+  <%- include('../../partials/noresults', {recipes: recipes}); -%>
   <% recipes.forEach( recipe => { %>
-    <%- include('../../partials/itemFull', {recipe: recipe}); -%>
-    
-    <!-- <div>
+  <%- include('../../partials/itemFull', {recipe: recipe}); -%>
+
+  <!-- <div>
       <form action="/recipes" method="post">
         <input type="hidden" name="recipe_id" value="<%= recipe.id %>">  
         <img src = "<%= recipe.image_url %>"/>
@@ -14,7 +14,7 @@
         
       </form>
     </div> -->
-    <% }); %>
+  <% }); %>
 </section>
 
 <%- include('../../partials/footer'); -%>
