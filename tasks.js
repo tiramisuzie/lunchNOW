@@ -97,6 +97,7 @@ function dbCacheInsert(apiResponse) {
 }
 
 function getData(req, res, next) {
+
   let howMuchToShow = 3;
   let howMuchIngredients = 2;
   let randomIngredients = getRandomFromRange(
@@ -105,6 +106,7 @@ function getData(req, res, next) {
   );
   let queryStringForApi = randomIngredients.join(' ').replace(/\s/g, '+');
   let url = `https://api.edamam.com/search?q=${queryStringForApi}&app_id=${
+
     process.env.ApplicationID
   }&app_key=${process.env.ApplicationKey}&to=${howMuchToShow}`;
   console.log(url);
@@ -179,8 +181,10 @@ function wipeTables() {
   });
 }
 
-//details for one object
-function getDetails() {}
+//details for one recipe to display in iframe page
+// function getDetails(request, response) {
+//   response.render('.pages/recipes/iframe', )
+// }
 
 //display API results from queried items
 function searchForRecipesExternalApi(request, response) {
@@ -238,8 +242,9 @@ module.exports = {
   handle404,
   getData,
   addDataToDb,
-  getDetails,
+
   searchForRecipesExternalApi,
   handleDataManipulationRequest,
   deleteDataFromDb
+
 };
