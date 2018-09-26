@@ -25,7 +25,7 @@ app.post('/recipes', tasks.addDataToDb);
 app.get('/favorites', tasks.getData);
 
 // app.get('/about_us', tasks.searchRecipesForm);
-app.get('/search_results/', tasks.searchForRecipesExternalApi);
+app.get('/searches/results', tasks.searchForRecipesExternalApi);
 
 app.use(tasks.handle404);
 
