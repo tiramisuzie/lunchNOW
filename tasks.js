@@ -43,6 +43,7 @@ function getRandomFromRange(arr, numberElmToChoose) {
   return result;
 }
 
+//insert search results and random index recipes to cache tables
 function dbCacheInsert(apiResponse) {
   wipeTables();
   let recipes = apiResponse.body.hits.map(recipe => {
@@ -96,6 +97,7 @@ function dbCacheInsert(apiResponse) {
   });
 }
 
+//randomly use ingredients from array to generate recipes to display on index
 function getData(req, res, next) {
 
   let howMuchToShow = 3;
@@ -173,6 +175,19 @@ function addDataToDb(req, res) {
   });
 }
 
+//render favorite recipes page from favorites table
+function renderFavoriteRecipes(request, response) {
+  let SQL = 'SELECT * FROM favoriterecipes;'
+  client.query(SQL, (err, result) => {
+    if(err) {
+      console.error(err);
+      response.redirect('/error');
+    }else{
+      response.render(`./pages/recipes/favorites`, { recipes: result.rows });
+    }
+  });
+}
+
 //truncate cache tables
 function wipeTables() {
   let SQL = 'TRUNCATE ingredientscache, resultscache;';
@@ -246,9 +261,8 @@ module.exports = {
   handle404,
   getData,
   addDataToDb,
-
   searchForRecipesExternalApi,
   handleDataManipulationRequest,
-  deleteDataFromDb
-
+  deleteDataFromDb,
+  renderFavoriteRecipes
 };
