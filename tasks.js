@@ -186,9 +186,14 @@ function searchForRecipesExternalApi(request, response) {
         process.env.ApplicationID
       }&app_key=${process.env.ApplicationKey}`
     )
-    .end((err, apiResponse) => {
-      let recipesToRender = dbCacheInsert(apiResponse);
-      response.render('./pages/searches/results', { recipes: recipesToRender });
+    .end((err, apiResponse, next) => {
+      if(err) {
+        next(createError(err));
+      } else {
+        let recipesToRender = dbCacheInsert(apiResponse);
+        response.render('./pages/searches/results', { recipes: recipesToRender, returnedFromApi:true });
+      }
+
     });
 }
 

@@ -2,6 +2,7 @@
 <%- include('../../partials/nav'); -%>
 
 <section>
+  <%- include('../../partials/noresults'); -%>
   <% recipes.forEach( recipe => { %>
     <%- include('../../partials/itemFull', {recipe: recipe}); -%>
     
