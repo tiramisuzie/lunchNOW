@@ -93,6 +93,7 @@ Recipe.prototype.updateRecord = function(callback) {
 };
 
 let addToFavorites = function(event) {
+  event.preventDefault();
   $.ajax({
     url: `/recipes`,
     method: 'POST',
@@ -100,8 +101,8 @@ let addToFavorites = function(event) {
       recipe_id: this.id
     }
   }).then((resp, status, xhr) => {
-    console.log(xhr);
+    console.log(JSON.parse(xhr.responseText));
   });
 };
 
-$('form').on('click', addToFavorites);
+$('form').on('submit', addToFavorites);

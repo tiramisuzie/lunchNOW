@@ -29,7 +29,7 @@ nav li {
   border-bottom: 1px solid #ccc;
 }
 
-/* === MEDIA OBJ FORMATTING === */
+/* =========== Media object ============*/
 .media-obj {
   box-shadow: 2px 2px 4px 4px #29506d;
   width: 80vw;
@@ -70,12 +70,27 @@ nav li {
   text-align: initial;
 }
 
+.media-obj__button::after {
+  content: " \2665";
+  width: 1.3em;
+  height: 1.3em;
+  color: #ccc;
+}
+
+.--red::after {
+  color: red;
+  content: " \2665";
+  width: 1.3em;
+  height: 1.3em;
+}
+/* =========== Media object end ============*/
+
 .input {
   display: block;
   width: 80%;
   margin: 0 auto;
-  margin-top: .3em;
-  padding: .5em;
+  margin-top: 0.3em;
+  padding: 0.5em;
 }
 
 .label {
