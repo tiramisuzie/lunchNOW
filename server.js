@@ -15,14 +15,15 @@ app.use(express.static('./public'));
 
 app.get('/', (req, res) => res.redirect('/recipes'));
 
-// //grabbing and returning all objects from database
+//grabbing and returning all objects from database
 app.get('/recipes', tasks.getData);
-// //add new object to DB
+//add new object to DB
 app.post('/recipes', tasks.addDataToDb);
-// //details for one object
-// app.get('/recipes/:id', tasks.getDetails);
-// //display form
+//details for one object
+app.get('/instructions', tasks.getDetails);
+//display form
 app.get('/favorites', tasks.getData);
+//TO DO: need to replace task.getData with function that will populate the favorites from the sql table to the page.
 
 // app.get('/about_us', tasks.searchRecipesForm);
 app.get('/search_results/', tasks.searchForRecipesExternalApi);

@@ -1,23 +1,19 @@
 <%- include('partials/header'); -%>
 <%- include('partials/nav') -%>
 <main>
+
     <form action="/search_results" method="GET">
       <input type="text" name="searchBar" class="searchbar" />
       <input type="submit" value="search!" />
     </form>
+
   <section>
     <h2>All Recipes </h2>
     <% recipes.forEach( recipe => { %>
-      <div>
-        <form action="/recipes" method="post">
-          <input type="hidden" name="recipe_id" value="<%= recipe.id %>">  
-          <img src = "<%= recipe.image_url %>"/>
-          <input type="submit" value="Save" />
-          
-        </form>
-      </div>
-      <% }); %>
+    <%- include('partials/itemFull', {recipe: recipe}); -%>
     
+    <% }); %>
+
   </section>
 </main>
 <%- include('partials/footer'); -%>
