@@ -15,6 +15,7 @@ a:visited {
   padding: 0.5em 5em;
 
   color: black;
+  text-transform: uppercase;
 }
 a:hover {
   font-weight: 300;

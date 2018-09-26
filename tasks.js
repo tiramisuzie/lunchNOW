@@ -75,9 +75,8 @@ function dbCacheInsert(apiResponse) {
       recipe.total_time,
       recipe.id
     ];
-
+    console.log('cache table inserted');
     client.query(SQL, values).then(data => {
-      console.log(data.rows[0].resultsrecipe_id);
       recipe.ingredients.forEach(ing => {
         let SQL =
           'INSERT INTO ingredientsCache(recipe_ref_id, ingredient_desc) VALUES($1, $2);';
@@ -172,7 +171,7 @@ function addDataToDb(req, res) {
   });
 }
 
-//truncate tables
+//truncate cache tables
 function wipeTables() {
   let SQL = 'TRUNCATE ingredientscache, resultscache;';
   client.query(SQL).then(() => {

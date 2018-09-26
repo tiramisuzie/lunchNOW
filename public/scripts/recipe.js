@@ -108,3 +108,4 @@ let handleFavorites = function(event) {
 };
 
 $('.media-obj__button').on('click', handleFavorites);
+
