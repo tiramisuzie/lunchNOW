@@ -24,4 +24,11 @@ iframe {
 
 .about-container {
   display: flex;
+  text-align: center;
+  justify-content: space-around;
+}
+
+.body-container {
+  background-color: white;
+  
 }
