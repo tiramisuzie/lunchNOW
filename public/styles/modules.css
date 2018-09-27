@@ -1,6 +1,5 @@
 /* === OVERALL MODULE RULES === */
 
-
 body > header {
   background: white;
 }
@@ -39,25 +38,60 @@ a:hover {
   flex: 1 1 auto;
   display: block;
   -webkit-appearance: none;
-  opacity: .8;
+  opacity: 0.8;
 }
 
 form {
   width: 100%;
-  
 }
 .searchBarContainer {
   background-image: url("./assets/salad.jpg");
   background-size: cover;
   height: 60vw;
   display: flex;
-
+}
+.main-deck {
+  display: grid;
+  width: 100%;
+  grid-gap: 3em;
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "a"
+    "b"
+    "c"
+    "d"
+    "e"
+    "f"
+    "g"
+    "h"
+    "i"
+    "j";
 }
 
+@media screen and (min-width: 40em) {
+  .main-deck {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-areas:
+      "a b"
+      "c d"
+      "e f"
+      "g h"
+      "i j";
+  }
+}
+@media screen and (min-width: 60em) {
+  .main-deck {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-areas:
+      "a b c"
+      "d e f"
+      "g h i"
+      ". j .";
+  }
+}
 /* =========== Media object ============*/
 .media-obj {
   box-shadow: 1px 1px 2px 2px #29506d;
-  width: 80vw;
   margin: 1em auto;
   padding: 1em;
   display: flex;
@@ -121,6 +155,37 @@ form {
   width: 45%;
   text-align: left;
 }
+
+.media-obj:nth-of-type(1) {
+  grid-area: a;
+}
+.media-obj:nth-of-type(2) {
+  grid-area: b;
+}
+.media-obj:nth-of-type(3) {
+  grid-area: c;
+}
+.media-obj:nth-of-type(4) {
+  grid-area: d;
+}
+.media-obj:nth-of-type(5) {
+  grid-area: e;
+}
+.media-obj:nth-of-type(6) {
+  grid-area: f;
+}
+.media-obj:nth-of-type(7) {
+  grid-area: g;
+}
+.media-obj:nth-of-type(8) {
+  grid-area: h;
+}
+.media-obj:nth-of-type(9) {
+  grid-area: i;
+}
+.media-obj:nth-of-type(10) {
+  grid-area: j;
+}
 /* =========== Media object end ============*/
 
 .input {
@@ -148,7 +213,7 @@ p {
   font-size: 1em;
 }
 
-@media only screen and (min-width: 640px) {
+/*
   .icon-menu {
     display: none;
   }
@@ -170,3 +235,4 @@ p {
     color: #29506d;
   }
 }
+*/

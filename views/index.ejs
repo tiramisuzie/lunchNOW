@@ -1,24 +1,17 @@
-
-<div>
 <%- include('partials/header'); -%>
 <%- include('partials/nav') -%>
 <main>
-    
 
+  <div class="searchBarContainer">
+    <%- include('partials/searchBar') -%>
+  </div>
 
-<div class="searchBarContainer">
-
-  <!-- <img class="home-img" src="./styles/assets/salad.jpg"> -->
-  <%- include('partials/searchBar') -%>
-</div>
-
-  <section>
+  <section class="main-deck">
     <%- include('partials/noresults', {recipes: recipes}); -%>
     <% recipes.forEach( recipe => { %>
     <%- include('partials/itemFull', {recipe: recipe}); -%>
     <% }); %>
-
   </section>
+
 </main>
 <%- include('partials/footer'); -%>
-</div>

@@ -1,10 +1,10 @@
 <%- include('../../partials/header'); -%>
 <%- include('../../partials/nav'); -%>
 
-<section>
+<section class="main-deck">
   <%- include('../../partials/noresults', {recipes: recipes}); -%>
   <% recipes.forEach( recipe => { %>
-    <%- include('../../partials/itemFull', {recipe: recipe}); -%>
+  <%- include('../../partials/itemFull', {recipe: recipe}); -%>
   <% }); %>
 </section>
 

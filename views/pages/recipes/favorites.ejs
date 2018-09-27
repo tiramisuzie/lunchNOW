@@ -1,9 +1,9 @@
 <%- include('../../partials/header'); -%>
 <%- include('../../partials/nav'); -%>
 
-<section>
+<section class="main-deck">
   <% recipes.forEach( recipe => { %>
-    <%- include('../../partials/itemFull', {recipe: recipe}); -%>
+  <%- include('../../partials/itemFull', {recipe: recipe}); -%>
   <% }); %>
 </section>
 
