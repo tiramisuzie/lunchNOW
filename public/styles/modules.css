@@ -33,7 +33,7 @@ a:hover {
   border-radius: 15px;
   box-shadow: none;
   border: none;
-  width: 80%;
+  width: 100%;
   padding: 1em 3em;
   flex: 1 1 auto;
   display: inline-block;
@@ -51,7 +51,7 @@ a:hover {
 
 form {
   width: 80%;
-  margin: 4em auto;
+  margin: 6em auto;
   
 }
 .searchBarContainer {
