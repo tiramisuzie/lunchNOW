@@ -1,12 +1,16 @@
+
+<div>
 <%- include('partials/header'); -%>
 <%- include('partials/nav') -%>
 <main>
+    
 
-  <form action="/search/results" method="GET">
-    <input type="text" name="searchBar" class="searchbar" />
-    <input type="submit" value="search!" />
-  </form>
 
+<div class="searchBarContainer">
+
+  <!-- <img class="home-img" src="./styles/assets/salad.jpg"> -->
+  <%- include('partials/searchBar') -%>
+</div>
 
   <section>
     <%- include('partials/noresults', {recipes: recipes}); -%>
@@ -17,3 +21,4 @@
   </section>
 </main>
 <%- include('partials/footer'); -%>
+</div>
