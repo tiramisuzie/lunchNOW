@@ -46,7 +46,7 @@ function getRandomFromRange(arr, numberElmToChoose) {
 //insert search results and random index recipes to cache tables
 function dbCacheInsert(apiResponse) {
   wipeTables();
-  console.log(apiResponse.body);
+  // console.log(apiResponse.body);
   if (Object.keys(apiResponse.body).length === 0) return Promise.resolve([]);
   let recipes = apiResponse.body.hits.map(recipe => {
     return {
@@ -76,18 +76,21 @@ function dbCacheInsert(apiResponse) {
       recipe.id
     ];
     console.log('cache table inserted');
-    client.query(SQL, values).then(data => {
-      recipe.ingredients.forEach(ing => {
-        let SQL =
-          'INSERT INTO ingredientsCache(recipe_ref_id, ingredient_desc, weight) VALUES($1, $2, $3);';
-        let values = [
-          data.rows[0].resultsrecipe_id,
-          ing.text,
-          Math.ceil(ing.weight)
-        ];
-        client.query(SQL, values);
-      });
-    });
+    client
+      .query(SQL, values)
+      .then(data => {
+        recipe.ingredients.forEach(ing => {
+          let SQL =
+            'INSERT INTO ingredientsCache(recipe_ref_id, ingredient_desc, weight) VALUES($1, $2, $3);';
+          let values = [
+            data.rows[0].resultsrecipe_id,
+            ing.text,
+            Math.ceil(ing.weight)
+          ];
+          client.query(SQL, values);
+        });
+      })
+      .catch(err => createError(err));
   });
   return Promise.all(
     recipes.map(recipe => checkRecordExistsInDB(recipe.id))
@@ -109,8 +112,7 @@ function getData(req, res, next) {
   let url = `https://api.edamam.com/search?q=${queryStringForApi}&app_id=${
     process.env.ApplicationID
   }&app_key=${process.env.ApplicationKey}&to=${howMuchToShow}`;
-  console.log(url);
-  console.log(randomIngredients);
+  console.log(`randomIngredients: ${randomIngredients}`);
   superagent.get(url).end((err, apiResponse) => {
     dbCacheInsert(apiResponse).then(recipes =>
       res.render('index', { recipes: recipes })
@@ -125,8 +127,12 @@ function checkRecordExistsInDB(values) {
 
 //query ingredients for favorite recipes to render favorites page with ingredients
 function retrieveIngredientsForFavoriteRecipe(values) {
-  let SQL = 'SELECT ingredient_desc FROM ingredients WHERE recipe_ref_id = $1;';
-  return client.query(SQL, [values]);
+  let SQL =
+    'SELECT ingredient_desc as text FROM ingredients WHERE recipe_ref_id = $1;';
+  return client.query(SQL, [values]).then(result => {
+    console.log(result);
+    return result;
+  });
 }
 
 //add new object to DB
@@ -162,8 +168,8 @@ function addDataToDb(req, res) {
 
   client.query(SQL, values).then(data => {
     console.log(`${msgForTrx}inserted into favoriteRecipes ${data.rowCount}`);
-    let SQL = `INSERT INTO ingredients (recipe_ref_id, ingredient_desc) 
-      SELECT recipe_ref_id, ingredient_desc 
+    let SQL = `INSERT INTO ingredients (recipe_ref_id, ingredient_desc, weight) 
+      SELECT recipe_ref_id, ingredient_desc , weight
         FROM ingredientsCache 
        WHERE recipe_ref_id = $1
          and not exists (
@@ -187,49 +193,28 @@ function renderFavoriteRecipes(request, response, next) {
   directions_url, 
   source_title, 
   calories, 
-  total_time FROM favoriterecipes;`;
+  total_time, true as saved FROM favoriterecipes;`;
 
   client.query(SQL, (err, result) => {
     if (err) {
       console.error(err);
-      response.redirect('/error');
+      // response.redirect('/error');
+      next(createError(err));
     } else {
       Promise.all(
-        result.rows.map(recipe =>
-          retrieveIngredientsForFavoriteRecipe(recipe.favoriterecipe_id)
-        )
+        result.rows.map(recipe => {
+          return retrieveIngredientsForFavoriteRecipe(recipe.id);
+        })
       )
         .then(data => {
+          // console.log(data.rows);
           data.forEach(
             (ingredients, ndx) =>
               (result.rows[ndx].ingredients = ingredients.rows)
           );
+          console.log(result.rows);
           response.render(`./pages/recipes/favorites`, {
             recipes: result.rows
-          });
-          console.log(result.rows);
-          result.rows.forEach(recipe => {
-            let SQL =
-              'INSERT INTO resultsCache(title, image_url, directions_url, source_title, calories, total_time, resultsRecipe_id) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING resultsRecipe_id;';
-
-            let values = [
-              recipe.title,
-              recipe.image_url,
-              recipe.directions_url,
-              recipe.source_title,
-              recipe.calories,
-              recipe.total_time,
-              recipe.id
-            ];
-            console.log('cache table inserted');
-            client.query(SQL, values).then(data => {
-              recipe.ingredients.forEach(ing => {
-                let SQL =
-                  'INSERT INTO ingredientsCache(recipe_ref_id, ingredient_desc) VALUES($1, $2);';
-                let values = [data.rows[0].resultsrecipe_id, ing];
-                client.query(SQL, values);
-              });
-            });
           });
         })
         .catch(err => next(createError(err)));
