@@ -106,7 +106,7 @@ function toRecipeObj(apiResponse) {
 
 //randomly use ingredients from array to generate recipes to display on index
 function getData(req, res, next) {
-  let howMuchToShow = 3;
+  let howMuchToShow = 6;
   let howMuchIngredients = 2;
   let randomIngredients = getRandomFromRange(
     ingredientList.ingredients,

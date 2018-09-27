@@ -1,15 +1,13 @@
-
-
 h1 {
   text-align: center;
   font-size: 2.5em;
-  font-family: 'Abril Fatface', cursive;
+  font-family: "Abril Fatface", cursive;
 }
 
 .subtitle {
   text-align: center;
   font-size: 1.5em;
-  font-family: 'Dancing Script', cursive;
+  font-family: "Dancing Script", cursive;
 }
 
 iframe {
@@ -22,7 +20,34 @@ iframe {
   background-color: white;
 }
 
-.about-container {
+
+body {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 4fr;
+  grid-template-areas:
+    "header"
+    "nav"
+    "main"
+    "footer";
+}
+
+header {
+  grid-area: header;
+}
+
+nav {
+  grid-area: nav;
+}
+
+main {
+  grid-area: main;
+}
+
+footer {
+  grid-area: footer;
+}
+  .about-container {
   display: flex;
   text-align: center;
   justify-content: space-around;
@@ -30,5 +55,4 @@ iframe {
 
 .body-container {
   background-color: white;
-  
 }

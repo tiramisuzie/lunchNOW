@@ -1,4 +1,13 @@
 /* === BASE RULES === */
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::after,
+*::before {
+  box-sizing: inherit;
+}
 
 body {
   line-height: 1.5;
@@ -7,15 +16,14 @@ body {
   background-image: url("./assets/marble.jpg");
 }
 
-main {
-  margin: 0 20px;
+html {
+  box-sizing: border-box;
 }
 
-html {
- box-sizing: border-box;
+p {
+  padding: 15px;
 }
 
 * {
   box-sizing: inherit;
 }
-
