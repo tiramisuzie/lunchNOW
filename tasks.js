@@ -44,25 +44,8 @@ function getRandomFromRange(arr, numberElmToChoose) {
 }
 
 //insert search results and random index recipes to cache tables
-function dbCacheInsert(apiResponse) {
-  wipeTables();
-  console.log(apiResponse.body);
-  if (Object.keys(apiResponse.body).length === 0) return Promise.resolve([]);
-  let recipes = apiResponse.body.hits.map(recipe => {
-    return {
-      id: recipe.recipe.uri.slice(-32),
-      title: recipe.recipe.label,
-      image_url: recipe.recipe.image,
-      directions_url: recipe.recipe.url,
-      source_title: recipe.recipe.source,
-      calories: Math.round(recipe.recipe.calories),
-      total_time: recipe.recipe.totalTime,
-      ingredients: recipe.recipe.ingredients,
-      saved: false
-    };
-  });
-
-  recipes.forEach((recipe, index) => {
+function dbCacheInsert(recipeObj) {
+  recipeObj.forEach((recipe, index) => {
     let SQL =
       'INSERT INTO resultsCache(title, image_url, directions_url, source_title, calories, total_time, resultsRecipe_id) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING resultsRecipe_id;';
 
@@ -86,10 +69,28 @@ function dbCacheInsert(apiResponse) {
     });
   });
   return Promise.all(
-    recipes.map(recipe => checkRecordExistsInDB(recipe.id))
+    recipeObj.map(recipe => checkRecordExistsInDB(recipe.id))
   ).then(data => {
-    data.forEach((elmExists, ndx) => (recipes[ndx].saved = Boolean(elmExists)));
-    return recipes;
+    data.forEach((elmExists, ndx) => (recipeObj[ndx].saved = Boolean(elmExists)));
+    return recipeObj;
+  });
+}
+
+//take API response and turn into recipe object
+function toRecipeObj(apiResponse) {
+  if (Object.keys(apiResponse.body).length === 0) return [];
+  return apiResponse.body.hits.map(recipe => {
+    return {
+      id: recipe.recipe.uri.slice(-32),
+      title: recipe.recipe.label,
+      image_url: recipe.recipe.image,
+      directions_url: recipe.recipe.url,
+      source_title: recipe.recipe.source,
+      calories: Math.round(recipe.recipe.calories),
+      total_time: recipe.recipe.totalTime,
+      ingredients: recipe.recipe.ingredients,
+      saved: false
+    };
   });
 }
 
@@ -108,7 +109,9 @@ function getData(req, res, next) {
   console.log(url);
   console.log(randomIngredients);
   superagent.get(url).end((err, apiResponse) => {
-    dbCacheInsert(apiResponse).then(recipes =>
+    wipeTables();
+    let recipesData  = toRecipeObj(apiResponse)
+    dbCacheInsert(recipesData).then(recipes =>
       res.render('index', { recipes: recipes })
     );
   });
@@ -183,7 +186,7 @@ function renderFavoriteRecipes(request, response, next) {
   directions_url, 
   source_title, 
   calories, 
-  total_time FROM favoriterecipes;`
+  total_time , true as saved FROM favoriterecipes;`
 
   client.query(SQL, (err, result) => {
     if(err) {
@@ -251,8 +254,9 @@ function searchForRecipesExternalApi(request, response, next) {
       if (err) {
         next(createError(err));
       } else {
-
-        dbCacheInsert(apiResponse).then(recipes =>
+        wipeTables();
+        let recipesData  = toRecipeObj(apiResponse)
+        dbCacheInsert(recipesData).then(recipes =>
           response.render('./pages/searches/results', {
             recipes: recipes
           })
@@ -260,16 +264,75 @@ function searchForRecipesExternalApi(request, response, next) {
       }
     });
 }
+
+
 function handleDataManipulationRequest(req, res, next) {
   let recipe_id = req.body.recipe_id;
   checkRecordExistsInDB(recipe_id)
     .then(data => {
-      if (data) deleteDataFromDb(req, res, next);
+      if (data) transferToCache(req, res, next);
       else addDataToDb(req, res, next);
     })
     .catch(err => next(createError(err)));
 }
 
+function transferToCache(req, res, next) {
+  copyToCache(req, res, next).then(data =>
+    deleteDataFromDb(req, res, next)
+  );
+}
+
+//copy favorites and ingredients into cache tables to allow user to re-favorite a recipe
+function copyToCache(req, res, next) {
+  let recipe_id = req.body.recipe_id;
+  let msgForTrx = `Recipe_id #...${recipe_id.slice(-10)}: `;
+  console.log(`${msgForTrx}begin insertion`);
+
+  let SQL = `INSERT INTO resultsCache (
+    resultsRecipe_id, 
+    title, 
+    image_url, 
+    directions_url, 
+    source_title, 
+    calories, 
+    total_time 
+    ) 
+  SELECT 
+    favoriteRecipe_id, 
+    title, 
+    image_url, 
+    directions_url, 
+    source_title, 
+    calories, 
+    total_time
+  FROM favoriteRecipes
+  WHERE favoriterecipe_id = $1
+   and not exists (
+    select 1 
+      from resultscache 
+     where resultsrecipe_id = $1);`;
+  let values = [recipe_id];
+
+  return client.query(SQL, values).then(data => {
+    console.log(`${msgForTrx}inserted into resultscache ${data.rowCount}`);
+    let SQL = `INSERT INTO ingredientscache (recipe_ref_id, ingredient_desc) 
+      SELECT recipe_ref_id, ingredient_desc 
+        FROM ingredients 
+       WHERE recipe_ref_id = $1
+         and not exists (
+          select 1 
+            from ingredientscache 
+           where recipe_ref_id = $1);`;
+
+    return client.query(SQL, values).then(data => {
+      console.log(`${msgForTrx}inserted into ingredientscache ${data.rowCount}`);
+      console.log(`${msgForTrx}end`);
+    });
+  });
+
+}
+
+//delete from ingredients and favorites tables
 function deleteDataFromDb(req, res, next) {
   let recipe_id = req.body.recipe_id;
   let msgForTrx = `Recipe_id #...${recipe_id.slice(-10)}: `;
@@ -302,5 +365,6 @@ module.exports = {
   searchForRecipesExternalApi,
   handleDataManipulationRequest,
   deleteDataFromDb,
-  renderFavoriteRecipes
+  renderFavoriteRecipes,
+  copyToCache
 };
