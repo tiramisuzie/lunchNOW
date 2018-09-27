@@ -177,7 +177,13 @@ function addDataToDb(req, res) {
 
 //render favorite recipes page from favorites table
 function renderFavoriteRecipes(request, response, next) {
-  let SQL = `SELECT * FROM favoriterecipes;`
+  let SQL = `SELECT favoriteRecipe_id as id, 
+  title, 
+  image_url, 
+  directions_url, 
+  source_title, 
+  calories, 
+  total_time FROM favoriterecipes;`
 
   client.query(SQL, (err, result) => {
     if(err) {
@@ -187,8 +193,32 @@ function renderFavoriteRecipes(request, response, next) {
       Promise.all(
         result.rows.map(recipe => retrieveIngredientsForFavoriteRecipe(recipe.favoriterecipe_id))
       ).then(data => {
-        data.forEach((ingredients, ndx) => (result.rows[ndx].ingredients = ingredients));
+        data.forEach((ingredients, ndx) => (result.rows[ndx].ingredients = ingredients.rows));
         response.render(`./pages/recipes/favorites`, { recipes: result.rows });
+        console.log(result.rows);
+        result.rows.forEach((recipe) => {
+          let SQL =
+            'INSERT INTO resultsCache(title, image_url, directions_url, source_title, calories, total_time, resultsRecipe_id) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING resultsRecipe_id;';
+
+          let values = [
+            recipe.title,
+            recipe.image_url,
+            recipe.directions_url,
+            recipe.source_title,
+            recipe.calories,
+            recipe.total_time,
+            recipe.id
+          ];
+          console.log('cache table inserted');
+          client.query(SQL, values).then(data => {
+            recipe.ingredients.forEach(ing => {
+              let SQL =
+                'INSERT INTO ingredientsCache(recipe_ref_id, ingredient_desc) VALUES($1, $2);';
+              let values = [data.rows[0].resultsrecipe_id, ing];
+              client.query(SQL, values);
+            });
+          });
+        });
       })
         .catch(err => next(createError(err)));
     }})
