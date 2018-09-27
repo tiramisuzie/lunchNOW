@@ -113,7 +113,9 @@ form {
 
 /* =========== Media object ============*/
 .media-obj {
-  box-shadow: 1px 1px 2px 2px #29506d;
+  border: grey;
+  border-style: double;
+  border-width: medium;
   margin: 1em auto;
   padding: 1em;
   display: flex;
@@ -128,11 +130,13 @@ form {
 .media-obj__data {
   width: 100%;
   text-align: center;
+  font-display: sans-serif;
+  max-height: 0;
 }
 .media-obj__header {
-  font-size: 2em;
-  color: #fff;
-  text-shadow: 2px 2px #29506d;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.5em;
+
 }
 .--smaller {
   font-size: 1.2em;
@@ -170,12 +174,14 @@ form {
   display: flex;
   justify-content: space-evenly;
   flex-wrap: wrap;
+  text-align: center;
 }
 
 .list__elm {
   flex: 1 1 auto;
   width: 45%;
   text-align: left;
+  opacity: 0;
 }
 
 .media-obj:nth-of-type(1) {
@@ -235,7 +241,7 @@ p {
   font-size: 1em;
 }
 
-/*
+
   .icon-menu {
     display: none;
   }
@@ -257,4 +263,4 @@ p {
     color: #29506d;
   }
 }
-*/
+
