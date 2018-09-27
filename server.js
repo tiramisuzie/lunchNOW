@@ -26,7 +26,7 @@ app.get('/recipe-details', (req, res) =>
 );
 //display form
 
-app.get('/favorites', tasks.getData);
+app.get('/favorites', tasks.renderFavoriteRecipes);
 //TO DO: need to replace task.getData with function that will populate the favorites from the sql table to the page.
 
 // app.get('/about_us', tasks.searchRecipesForm);

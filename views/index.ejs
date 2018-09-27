@@ -13,11 +13,9 @@
 </div>
 
   <section>
-    <h2>All Recipes </h2>
     <%- include('partials/noresults', {recipes: recipes}); -%>
     <% recipes.forEach( recipe => { %>
     <%- include('partials/itemFull', {recipe: recipe}); -%>
-
     <% }); %>
 
   </section>
