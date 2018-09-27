@@ -20,6 +20,10 @@ html {
   box-sizing: border-box;
 }
 
+p {
+  padding: 15px;
+}
+
 * {
   box-sizing: inherit;
 }

@@ -2,6 +2,10 @@
 <%- include('../../partials/nav'); -%>
 
 <section class="main-deck">
+<div class="searchBarFavorites">
+  <%- include('../../partials/searchBar') -%>
+</div>
+
   <% recipes.forEach( recipe => { %>
   <%- include('../../partials/itemFull', {recipe: recipe}); -%>
   <% }); %>

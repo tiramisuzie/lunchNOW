@@ -20,6 +20,7 @@ iframe {
   background-color: white;
 }
 
+
 body {
   display: grid;
   grid-template-columns: 1fr;
@@ -45,4 +46,13 @@ main {
 
 footer {
   grid-area: footer;
+}
+  .about-container {
+  display: flex;
+  text-align: center;
+  justify-content: space-around;
+}
+
+.body-container {
+  background-color: white;
 }
