@@ -33,11 +33,26 @@ a:hover {
   border-radius: 15px;
   box-shadow: none;
   border: none;
-  width: 40%;
-  margin: 0 auto;
+  width: 80%;
+  margin: 10%;
+  padding: 10px;
+  flex: 1 1 auto;
+  display: block;
+  -webkit-appearance: none;
+  opacity: .8;
 }
 
+form {
+  width: 100%;
+  
+}
+.searchBarContainer {
+  background-image: url("./assets/salad.jpg");
+  background-size: cover;
+  height: 60vw;
+  display: flex;
 
+}
 
 
 /* =========== Media object ============*/
@@ -52,7 +67,7 @@ a:hover {
 
 .media-obj__picture {
   flex: 1 1 auto;
-  min-width: 80%;
+  min-width: 20%;
   height: auto;
 }
 .media-obj__data {

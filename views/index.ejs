@@ -1,11 +1,17 @@
+
+<div>
 <%- include('partials/header'); -%>
 <%- include('partials/nav') -%>
 <main>
     
-<%- include('partials/searchBar') -%>
-<div>
-  <img class="home-img" src="./styles/assets/salad.jpg">
+
+
+<div class="searchBarContainer">
+
+  <!-- <img class="home-img" src="./styles/assets/salad.jpg"> -->
+  <%- include('partials/searchBar') -%>
 </div>
+
   <section>
     <h2>All Recipes </h2>
     <%- include('partials/noresults', {recipes: recipes}); -%>
@@ -17,3 +23,4 @@
   </section>
 </main>
 <%- include('partials/footer'); -%>
+</div>

@@ -12,11 +12,14 @@ h1 {
   font-family: 'Dancing Script', cursive;
 }
 
-iframe {width: 90%;
-    margin: 0 5%;
-    height: 90vh;
+iframe {
+  width: 90%;
+  margin: 0 5%;
+  height: 90vh;
 }
 
 .media-obj {
- background-color: white;
+  background-color: white;
+  
+
 }
