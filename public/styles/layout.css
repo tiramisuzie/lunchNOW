@@ -46,13 +46,30 @@ main {
 
 footer {
   grid-area: footer;
+  text-align: center;
+  padding: 20px;
+  font-family: "Merriweather Sans", sans-serif;
+  font-size: 1.2em;
 }
-  .about-container {
+
+.about-container {
   display: flex;
   text-align: center;
   justify-content: space-around;
+  padding: 3%;
 }
 
 .body-container {
   background-color: white;
+  margin: 1% 10%;
+  padding: 16px;
+  border-style: groove;
+  border-width: 12px;
+  border-color: #bebebe;
+  font-size: 18px;
+}
+
+.about-title {
+  padding: 1%;
+  font-size: 2.8em;
 }
