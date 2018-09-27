@@ -8,6 +8,7 @@
 body > header {
   background: white;
 }
+
 a,
 a:visited {
   text-decoration: none;
@@ -27,6 +28,12 @@ a:hover {
   border-top: 1.5px solid black;
   text-align: center;
   padding: 0.5em;
+}
+
+.message {
+  font-family: "Merriweather Sans", sans-serif;
+  padding-left: 35px;
+  font-size: 1.2em;
 }
 
 .searchbar {
@@ -56,12 +63,15 @@ form {
   margin: 6em auto;
   
 }
+
 .searchBarContainer {
   background-image: url("./assets/salad.jpg");
   background-size: cover;
   height: 60vw;
   display: flex;
 }
+
+
 
 .main-deck {
   display: grid;
@@ -238,26 +248,20 @@ p {
   font-size: 1em;
 }
 
-/*
-  .icon-menu {
-    display: none;
-  }
 
-  nav {
-    padding: 0.2em 0.2em 0.2em 2em;
-  }
-
-  nav ul {
-    display: block;
-  }
-
-  nav ul li {
-    display: inline;
-    border-bottom: none;
-  }
-
-  nav ul li:hover a {
-    color: #29506d;
-  }
+.icon-menu {
+  display: none;
 }
-*/
+
+nav ul {
+  display: block;
+}
+
+nav ul li {
+  display: inline;
+  border-bottom: none;
+}
+
+nav ul li:hover a {
+  color: #29506d;
+}
