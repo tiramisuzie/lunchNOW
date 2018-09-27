@@ -57,7 +57,7 @@ function dbCacheInsert(apiResponse) {
       source_title: recipe.recipe.source,
       calories: Math.round(recipe.recipe.calories),
       total_time: recipe.recipe.totalTime,
-      ingredients: recipe.recipe.ingredientLines,
+      ingredients: recipe.recipe.ingredients,
       saved: false
     };
   });
@@ -251,6 +251,7 @@ function searchForRecipesExternalApi(request, response, next) {
       if (err) {
         next(createError(err));
       } else {
+
         dbCacheInsert(apiResponse).then(recipes =>
           response.render('./pages/searches/results', {
             recipes: recipes

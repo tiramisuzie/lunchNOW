@@ -9,9 +9,13 @@
 
   </a>
   <div class="media-obj__data">
-    <p class="data__text  --long">
-      <%= recipe.ingredients %>
-    </p>
+    <ul class="data__list">
+      <% recipe.ingredients.forEach( ingredient => { %>
+      <li class="list__elm">
+        <%= ingredient.text %>
+      </li>
+      <% }); %>
+    </ul>
   </div>
   <a href="#" alt="Add to Favorites" data-recipe_id="<%= recipe.id %>" class="media-obj__button  <% if(recipe.saved) {%>--red <%}%>">
     <!-- <svg class="heart" viewBox="0 0 32 29.6">

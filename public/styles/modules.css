@@ -54,7 +54,6 @@ form {
 
 }
 
-
 /* =========== Media object ============*/
 .media-obj {
   box-shadow: 1px 1px 2px 2px #29506d;
@@ -96,6 +95,9 @@ form {
   text-align: initial;
 }
 
+.media-obj__button {
+  padding: 0;
+}
 .media-obj__button::after {
   content: " \2665";
   font-size: 3em;
@@ -106,6 +108,18 @@ form {
   color: red;
   content: " \2665";
   font-size: 3em;
+}
+
+.data__list {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.list__elm {
+  flex: 1 1 auto;
+  width: 45%;
+  text-align: left;
 }
 /* =========== Media object end ============*/
 
