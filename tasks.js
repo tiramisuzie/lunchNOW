@@ -43,8 +43,11 @@ function getRandomFromRange(arr, numberElmToChoose) {
   return result;
 }
 
+//insert search results and random index recipes to cache tables
 function dbCacheInsert(apiResponse) {
   wipeTables();
+  console.log(apiResponse.body);
+  if (Object.keys(apiResponse.body).length === 0) return Promise.resolve([]);
   let recipes = apiResponse.body.hits.map(recipe => {
     return {
       id: recipe.recipe.uri.slice(-32),
@@ -59,9 +62,6 @@ function dbCacheInsert(apiResponse) {
     };
   });
 
-  console.log(
-    `dbCacheInsert. Get recipes from API are ${JSON.stringify(recipes)}`
-  );
   recipes.forEach((recipe, index) => {
     let SQL =
       'INSERT INTO resultsCache(title, image_url, directions_url, source_title, calories, total_time, resultsRecipe_id) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING resultsRecipe_id;';
@@ -89,13 +89,11 @@ function dbCacheInsert(apiResponse) {
     recipes.map(recipe => checkRecordExistsInDB(recipe.id))
   ).then(data => {
     data.forEach((elmExists, ndx) => (recipes[ndx].saved = Boolean(elmExists)));
-    console.log(
-      `dbCacheInsert. Recipes after checking DB are ${JSON.stringify(recipes)}`
-    );
     return recipes;
   });
 }
 
+//randomly use ingredients from array to generate recipes to display on index
 function getData(req, res, next) {
   let howMuchToShow = 3;
   let howMuchIngredients = 2;
@@ -119,6 +117,12 @@ function getData(req, res, next) {
 function checkRecordExistsInDB(values) {
   let SQL = 'select 1 from favoriteRecipes where favoriterecipe_id = $1;';
   return client.query(SQL, [values]).then(data => data.rowCount);
+}
+
+//query ingredients for favorite recipes to render favorites page with ingredients
+function retrieveIngredientsForFavoriteRecipe(values) {
+  let SQL = 'SELECT ingredient_desc FROM ingredients WHERE recipe_ref_id = $1;';
+  return client.query(SQL, [values]);
 }
 
 //add new object to DB
@@ -171,6 +175,55 @@ function addDataToDb(req, res) {
   });
 }
 
+//render favorite recipes page from favorites table
+function renderFavoriteRecipes(request, response, next) {
+  let SQL = `SELECT favoriteRecipe_id as id, 
+  title, 
+  image_url, 
+  directions_url, 
+  source_title, 
+  calories, 
+  total_time FROM favoriterecipes;`
+
+  client.query(SQL, (err, result) => {
+    if(err) {
+      console.error(err);
+      response.redirect('/error');
+    } else{
+      Promise.all(
+        result.rows.map(recipe => retrieveIngredientsForFavoriteRecipe(recipe.favoriterecipe_id))
+      ).then(data => {
+        data.forEach((ingredients, ndx) => (result.rows[ndx].ingredients = ingredients.rows));
+        response.render(`./pages/recipes/favorites`, { recipes: result.rows });
+        console.log(result.rows);
+        result.rows.forEach((recipe) => {
+          let SQL =
+            'INSERT INTO resultsCache(title, image_url, directions_url, source_title, calories, total_time, resultsRecipe_id) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING resultsRecipe_id;';
+
+          let values = [
+            recipe.title,
+            recipe.image_url,
+            recipe.directions_url,
+            recipe.source_title,
+            recipe.calories,
+            recipe.total_time,
+            recipe.id
+          ];
+          console.log('cache table inserted');
+          client.query(SQL, values).then(data => {
+            recipe.ingredients.forEach(ing => {
+              let SQL =
+                'INSERT INTO ingredientsCache(recipe_ref_id, ingredient_desc) VALUES($1, $2);';
+              let values = [data.rows[0].resultsrecipe_id, ing];
+              client.query(SQL, values);
+            });
+          });
+        });
+      })
+        .catch(err => next(createError(err)));
+    }})
+}
+
 //truncate cache tables
 function wipeTables() {
   let SQL = 'TRUNCATE ingredientscache, resultscache;';
@@ -198,12 +251,12 @@ function searchForRecipesExternalApi(request, response, next) {
       if (err) {
         next(createError(err));
       } else {
-        let recipesToRender = dbCacheInsert(apiResponse);
-        console.log(recipesToRender);
-        response.render('./pages/searches/results', {
-          recipes: recipesToRender,
-          returnedFromApi: recipesToRender
-        });
+
+        dbCacheInsert(apiResponse).then(recipes =>
+          response.render('./pages/searches/results', {
+            recipes: recipes
+          })
+        );
       }
     });
 }
@@ -246,8 +299,8 @@ module.exports = {
   handle404,
   getData,
   addDataToDb,
-
   searchForRecipesExternalApi,
   handleDataManipulationRequest,
-  deleteDataFromDb
+  deleteDataFromDb,
+  renderFavoriteRecipes
 };

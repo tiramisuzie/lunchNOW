@@ -1,7 +1,5 @@
 /* === OVERALL MODULE RULES === */
-body {
-  background-color: #ccc;
-}
+
 
 body > header {
   background: white;
@@ -35,13 +33,30 @@ a:hover {
   border-radius: 15px;
   box-shadow: none;
   border: none;
-  width: 40%;
-  margin: 0 auto;
+  width: 80%;
+  margin: 10%;
+  padding: 10px;
+  flex: 1 1 auto;
+  display: block;
+  -webkit-appearance: none;
+  opacity: .8;
+}
+
+form {
+  width: 100%;
+  
+}
+.searchBarContainer {
+  background-image: url("./assets/salad.jpg");
+  background-size: cover;
+  height: 60vw;
+  display: flex;
+
 }
 
 /* =========== Media object ============*/
 .media-obj {
-  box-shadow: 2px 2px 4px 4px #29506d;
+  box-shadow: 1px 1px 2px 2px #29506d;
   width: 80vw;
   margin: 1em auto;
   padding: 1em;
@@ -51,7 +66,7 @@ a:hover {
 
 .media-obj__picture {
   flex: 1 1 auto;
-  min-width: 80%;
+  min-width: 20%;
   height: auto;
 }
 .media-obj__data {
