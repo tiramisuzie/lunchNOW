@@ -20,6 +20,8 @@ iframe {
 
 .media-obj {
   background-color: white;
-  
+}
 
+.about-container {
+  display: flex;
 }
