@@ -39,9 +39,6 @@ a:hover {
   margin: 0 auto;
 }
 
-
-
-
 /* =========== Media object ============*/
 .media-obj {
   box-shadow: 2px 2px 4px 4px #29506d;
@@ -83,6 +80,9 @@ a:hover {
   text-align: initial;
 }
 
+.media-obj__button {
+  padding: 0;
+}
 .media-obj__button::after {
   content: " \2665";
   font-size: 3em;
@@ -93,6 +93,18 @@ a:hover {
   color: red;
   content: " \2665";
   font-size: 3em;
+}
+
+.data__list {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.list__elm {
+  flex: 1 1 auto;
+  width: 45%;
+  text-align: left;
 }
 /* =========== Media object end ============*/
 

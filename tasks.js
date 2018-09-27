@@ -54,7 +54,7 @@ function dbCacheInsert(apiResponse) {
       source_title: recipe.recipe.source,
       calories: Math.round(recipe.recipe.calories),
       total_time: recipe.recipe.totalTime,
-      ingredients: recipe.recipe.ingredientLines,
+      ingredients: recipe.recipe.ingredients,
       saved: false
     };
   });
@@ -97,7 +97,6 @@ function dbCacheInsert(apiResponse) {
 }
 
 function getData(req, res, next) {
-
   let howMuchToShow = 3;
   let howMuchIngredients = 2;
   let randomIngredients = getRandomFromRange(
@@ -106,7 +105,6 @@ function getData(req, res, next) {
   );
   let queryStringForApi = randomIngredients.join(' ').replace(/\s/g, '+');
   let url = `https://api.edamam.com/search?q=${queryStringForApi}&app_id=${
-
     process.env.ApplicationID
   }&app_key=${process.env.ApplicationKey}&to=${howMuchToShow}`;
   console.log(url);
@@ -197,14 +195,16 @@ function searchForRecipesExternalApi(request, response, next) {
       }&app_key=${process.env.ApplicationKey}`
     )
     .end((err, apiResponse) => {
-      if(err) {
+      if (err) {
         next(createError(err));
       } else {
         let recipesToRender = dbCacheInsert(apiResponse);
         console.log(recipesToRender);
-        response.render('./pages/searches/results', { recipes: recipesToRender, returnedFromApi: recipesToRender });
+        response.render('./pages/searches/results', {
+          recipes: recipesToRender,
+          returnedFromApi: recipesToRender
+        });
       }
-
     });
 }
 function handleDataManipulationRequest(req, res, next) {
@@ -250,5 +250,4 @@ module.exports = {
   searchForRecipesExternalApi,
   handleDataManipulationRequest,
   deleteDataFromDb
-
 };
