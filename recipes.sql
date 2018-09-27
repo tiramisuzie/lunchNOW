@@ -30,11 +30,3 @@ CREATE TABLE IF NOT EXISTS ingredientscache(
     ingredient_desc VARCHAR(256), 
     weight INT 
 );
-
-
-
-
-
-
-
-
