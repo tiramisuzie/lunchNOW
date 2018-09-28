@@ -18,7 +18,8 @@ a:visited {
   color: black;
 }
 a:hover {
-  font-weight: 300;
+  font-weight: bolder;
+  font-size: .85em;
 }
 
 .nav-container {
@@ -57,6 +58,9 @@ a:hover {
   display: inline-block;
 }
 
+.tab {
+  padding: 1em 5em;
+}
 form {
   width: 80%;
   margin: 6em auto;

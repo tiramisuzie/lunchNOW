@@ -4,6 +4,7 @@ h1 {
   font-family: "Abril Fatface", cursive;
 }
 
+
 .subtitle {
   text-align: center;
   font-size: 1.5em;
@@ -64,7 +65,7 @@ footer {
   margin: 1% 10%;
   padding: 16px;
   border-style: groove;
-  border-width: 12px;
+  border-width: 9px;
   border-color: #bebebe;
   font-size: 18px;
 }
