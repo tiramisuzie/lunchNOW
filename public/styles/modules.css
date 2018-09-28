@@ -51,6 +51,16 @@ a:hover {
   background-position: 0.3rem center;
   background-repeat: no-repeat;
   background-size: 1.5rem;
+  font-family: "Merriweather Sans", sans-serif;
+  letter-spacing: 1px;
+}
+
+::-webkit-input-placeholder {
+  color: #444343;
+  text-align: center;
+  font-style: oblique;
+  font-family: "Merriweather Sans", sans-serif;
+  letter-spacing: 1px;
 }
 
 .button {
