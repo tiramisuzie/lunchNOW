@@ -13,16 +13,21 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.static('./public'));
 
-app.get('/', (req, res) => res.redirect('/recipes'));
+// app.get('/', (req, res) => res.redirect('/recipes'));
 
 //grabbing and returning all objects from database
-app.get('/recipes', tasks.getData);
+app.get('/', tasks.getData);
+// app.get('/recipes', tasks.getData);
 
 //add new object to DB
 app.post('/recipes', tasks.handleDataManipulationRequest);
 //details for one object
 app.get('/recipe-details', (req, res) =>
-  res.render('./pages/recipes/iframe', { url: req.query.url })
+  res.render('./pages/recipes/iframe', {
+    url: req.query.url,
+    id: req.query.id,
+    saved: req.query.saved === 'true' ? true : false
+  })
 );
 //display form
 

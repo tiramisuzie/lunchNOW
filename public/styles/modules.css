@@ -1,10 +1,10 @@
 /* === OVERALL MODULE RULES === */
 #headerTitle h1 {
   text-align: center;
-  font-size: 3em;
-  padding: 0;
-  
-  font-family: 'Abril Fatface', cursive;
+
+  font-size: 2.5em;
+  font-family: "Abril Fatface", cursive;
+
 }
 
 body > header {
@@ -54,6 +54,16 @@ a:visited {
   background-position: 0.3rem center;
   background-repeat: no-repeat;
   background-size: 1.5rem;
+  font-family: "Merriweather Sans", sans-serif;
+  letter-spacing: 1px;
+}
+
+::-webkit-input-placeholder {
+  color: #444343;
+  text-align: center;
+  font-style: oblique;
+  font-family: "Merriweather Sans", sans-serif;
+  letter-spacing: 1px;
 }
 
 .button {
@@ -78,11 +88,13 @@ form {
 }
 
 
+
 .name {
   font-size: 1.8em;
   font-weight: 400;
   font-family: 'Dancing Script', cursive
 }
+
 .main-deck {
   display: grid;
   width: 100%;
@@ -161,19 +173,16 @@ form {
   max-width: 0;
 }
 .media-obj__header {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 1.5em;
   display: table-caption;
   caption-side: bottom;
-
 }
 .--smaller {
   font-size: 1.2em;
   color: initial;
   text-shadow: initial;
   font-style: italic;
-}
-.data__text {
 }
 .--short {
   font-style: italic;
@@ -192,10 +201,9 @@ form {
 }
 .media-obj__button .icon__heart .heart__outline {
   fill: white;
-
 }
 
-.media-obj__button .icon__heart  {
+.media-obj__button .icon__heart {
   fill: black;
 }
 
@@ -260,6 +268,18 @@ form {
 }
 /* =========== Media object end ============*/
 
+.button__wrapper {
+  position: relative;
+  width: 100%;
+  height: 0;
+  bottom: 8em;
+}
+
+.button__wrapper .media-obj__button {
+  left: 5%;
+  top: 1em;
+}
+
 .input {
   display: block;
   width: 80%;
@@ -290,19 +310,20 @@ p {
     display: none;
   }
 
-.icon-menu {
-  display: none;
-}
+  .icon-menu {
+    display: none;
+  }
 
-nav ul {
-  display: block;
-}
+  nav ul {
+    display: block;
+  }
 
-nav ul li {
-  display: inline;
-  border-bottom: none;
-}
+  nav ul li {
+    display: inline;
+    border-bottom: none;
+  }
 
-nav ul li:hover a {
-  color: #29506d;
+  nav ul li:hover a {
+    color: #29506d;
+  }
 }

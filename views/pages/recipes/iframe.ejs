@@ -1,7 +1,8 @@
 <%- include('../../partials/header'); -%>
 <%- include('../../partials/nav') -%>
+<div class="button__wrapper">
+  <%- include('../../partials/addToFav', { recipe: { id: id, saved: saved } }) -%>
+</div>
 
 
 <iframe src="<%= url %>"></iframe>
-
-<%- include('../../partials/footer'); -%>
