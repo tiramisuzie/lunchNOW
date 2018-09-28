@@ -5,7 +5,7 @@
 * [Suzanne Su](https://github.com/tiramisuzie/)
 * [Alex Stoforandov](https://github.com/al1s/)
 
-**Version**: 1.0.0
+**Version**: 2.1.0
 
 ## Description
 Lunch now is an app which helps organize the cooking process in the most effective way and provide the user with recipes search be ingredients, methods of cooking, nutrition facts and shopping cart functionality.
@@ -31,13 +31,38 @@ As a user I want to easily get the shopping list out of my recipe, so I can arra
 
 As a developer, I want to register users so that I can add the functionality to pull up recipe books from multiple users.  
 
+## Database Schemas
+database - lunchnow  
+tables - favoriterecipes, ingredients, ingredientscache, resultscache  
+see recipes.sql  
+
+## API
+Edamam API endpoint - https://developer.edamam.com/edamam-docs-recipe-api  
+
+## Site Endpoints
+(/recipes, GET) - loads our index with recipes  
+(/recipe_details, GET) - loads recipe details in iframe  
+(/favorites, GET) - loads recipes from favorites tables to render favorites page  
+(/search/results, GET) - loads results from API on results page  
+(/aboutus, GET) - loads the about us page  
+(/recipes, POST) - adds recipes to database tables  
+
 
 ## Architecture
-EJS, Node, Express, Postgresql
+EJS, Node, Express, Postgresql, Edamam API
 
 ## Change Log
 
-09-24-2018 9:30am - Initial Scaffolding
+09-28-2018 11:00am - MVP  
+09-27-2018 5:30pm - Search bar styled, styling added to all recipe cards  
+09-27-2018 11:30am - User can remove then re-add favorite results via favorites to cache tables; search bar added to results and favorites pages  
+09-26-2018 5:30pm - Styling added, index page styled, basic styling for ingredients list  
+09-26-2018 11:30am - Click to add to favorites, error messaging, iframe for external url link to recipe instructions  
+09-25-2018 5:30pm - Nav added and favorite recipes added to favorites tables  
+09-25-2018 11:30am - Index and results rendered  
+09-24-2018 5:30pm - API call to retrieve recipes to add to cache tables functioning and randomly selected recipes function working  
+09-24-2018 11:30am - Database and tables created with new server routes  
+09-24-2018 9:30am - Initial Scaffolding  
 
 ## Conflict Plan
 
