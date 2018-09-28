@@ -74,7 +74,7 @@ form {
 .main-deck {
   display: grid;
   width: 100%;
-  margin: 3em;
+  padding: 0 3em;
   grid-gap: 3em;
   grid-template-columns: 1fr;
   grid-template-areas:
@@ -142,6 +142,7 @@ form {
   text-align: center;
   font-display: sans-serif;
   max-height: 0;
+  max-width: 0;
 }
 .media-obj__header {
   font-family: 'Poppins', sans-serif;
@@ -171,7 +172,19 @@ form {
   top: 21em;
   left: 22em;
 }
-.media-obj__button::after {
+.media-obj__button .icon__heart .heart__outline {
+  fill: white;
+
+}
+
+.media-obj__button .icon__heart  {
+  fill: black;
+}
+
+.--red .icon__heart {
+  fill: red;
+}
+/* .media-obj__button::after {
   content: " \2665";
   font-size: 3em;
   color: #aaaaaa;
@@ -181,7 +194,7 @@ form {
   color: red;
   content: " \2665";
   font-size: 3em;
-}
+} */
 
 .data__list {
   display: flex;
