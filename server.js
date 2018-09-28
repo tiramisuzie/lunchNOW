@@ -13,10 +13,11 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.static('./public'));
 
-app.get('/', (req, res) => res.redirect('/recipes'));
+// app.get('/', (req, res) => res.redirect('/recipes'));
 
 //grabbing and returning all objects from database
-app.get('/recipes', tasks.getData);
+app.get('/', tasks.getData);
+// app.get('/recipes', tasks.getData);
 
 //add new object to DB
 app.post('/recipes', tasks.handleDataManipulationRequest);
