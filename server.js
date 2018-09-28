@@ -32,8 +32,7 @@ app.get('/favorites', tasks.renderFavoriteRecipes);
 // app.get('/about_us', tasks.searchRecipesForm);
 app.get('/search/results', tasks.searchForRecipesExternalApi);
 
-app.get('/aboutus', (req, res) =>
-  res.render('./pages/aboutus'));
+app.get('/aboutus', (req, res) => res.render('./pages/aboutus'));
 
 app.use(tasks.handle404);
 

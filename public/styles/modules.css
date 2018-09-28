@@ -65,7 +65,8 @@ form {
 .searchBarContainer {
   background-image: url("./assets/salad.jpg");
   background-size: cover;
-  height: 60vw;
+  background-position: center;
+  height: 30vw;
   display: flex;
 }
 
@@ -132,6 +133,10 @@ form {
   position: relative;
 }
 
+.media-obj__figure {
+  display: table;
+}
+
 .media-obj__picture {
   flex: 1 1 auto;
   min-width: 20%;
@@ -147,6 +152,8 @@ form {
 .media-obj__header {
   font-family: 'Poppins', sans-serif;
   font-size: 1.5em;
+  display: table-caption;
+  caption-side: bottom;
 
 }
 .--smaller {
