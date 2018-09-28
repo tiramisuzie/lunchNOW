@@ -5,7 +5,7 @@
 * [Suzanne Su](https://github.com/tiramisuzie/)
 * [Alex Stoforandov](https://github.com/al1s/)
 
-**Version**: 1.9.0
+**Version**: 2.1.0
 
 ## Description
 Lunch now is an app which helps organize the cooking process in the most effective way and provide the user with recipes search be ingredients, methods of cooking, nutrition facts and shopping cart functionality.
@@ -31,13 +31,29 @@ As a user I want to easily get the shopping list out of my recipe, so I can arra
 
 As a developer, I want to register users so that I can add the functionality to pull up recipe books from multiple users.  
 
+## Database Schemas
+database - lunchnow  
+tables - favoriterecipes, ingredients, ingredientscache, resultscache  
+see recipes.sql  
+
+## API
+Edamam API endpoint - https://developer.edamam.com/edamam-docs-recipe-api  
+
+## Site Endpoints
+(/recipes, GET) - loads our index with recipes  
+(/recipe_details, GET) - loads recipe details in iframe  
+(/favorites, GET) - loads recipes from favorites tables to render favorites page  
+(/search/results, GET) - loads results from API on results page  
+(/aboutus, GET) - loads the about us page  
+(/recipes, POST) - adds recipes to database tables  
+
 
 ## Architecture
-EJS, Node, Express, Postgresql
+EJS, Node, Express, Postgresql, Edamam API
 
 ## Change Log
 
-09-28-2018 
+09-28-2018 11:00am - MVP  
 09-27-2018 5:30pm - Search bar styled, styling added to all recipe cards  
 09-27-2018 11:30am - User can remove then re-add favorite results via favorites to cache tables; search bar added to results and favorites pages  
 09-26-2018 5:30pm - Styling added, index page styled, basic styling for ingredients list  
