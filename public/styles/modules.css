@@ -19,7 +19,7 @@ a:visited {
 }
 .tab:hover {
   font-weight: bolder;
-  font-size: .85em;
+  font-size: 1.1em;
 }
 
 .nav-container {
@@ -60,6 +60,7 @@ a:visited {
 
 .tab {
   padding: 1em 5em;
+  font-size: .95em;
 }
 form {
   width: 80%;
@@ -70,7 +71,7 @@ form {
   background-image: url("./assets/salad.jpg");
   background-size: cover;
   background-position: center;
-  height: 30vw;
+  height: 37vw;
   display: flex;
 }
 
