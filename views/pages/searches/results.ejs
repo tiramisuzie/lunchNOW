@@ -1,15 +1,16 @@
 <%- include('../../partials/header'); -%>
 <%- include('../../partials/nav'); -%>
 
-<section class="main-deck">
+<section>
 <div class="searchBarResults">
   <%- include('../../partials/searchBar') -%>
 </div>
-
+<div class = "main-deck">
   <%- include('../../partials/noresults', {recipes: recipes}); -%>
   <% recipes.forEach( recipe => { %>
   <%- include('../../partials/itemFull', {recipe: recipe}); -%>
   <% }); %>
+</div>
 </section>
 
 <%- include('../../partials/footer'); -%>
