@@ -1,8 +1,10 @@
 /* === OVERALL MODULE RULES === */
 #headerTitle h1 {
   text-align: center;
+
   font-size: 2.5em;
   font-family: "Abril Fatface", cursive;
+
 }
 
 body > header {
@@ -17,8 +19,9 @@ a:visited {
   margin-right: 0.4em;
   color: black;
 }
-a:hover {
-  font-weight: 300;
+.tab:hover {
+  font-weight: bolder;
+  font-size: 1.1em;
 }
 
 .nav-container {
@@ -67,6 +70,10 @@ a:hover {
   display: inline-block;
 }
 
+.tab {
+  padding: 1em 5em;
+  font-size: .95em;
+}
 form {
   width: 80%;
   margin: 6em auto;
@@ -76,8 +83,16 @@ form {
   background-image: url("./assets/salad.jpg");
   background-size: cover;
   background-position: center;
-  height: 30vw;
+  height: 39vw;
   display: flex;
+}
+
+
+
+.name {
+  font-size: 1.8em;
+  font-weight: 400;
+  font-family: 'Dancing Script', cursive
 }
 
 .main-deck {

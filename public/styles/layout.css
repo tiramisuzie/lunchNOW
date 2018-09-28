@@ -4,10 +4,12 @@ h1 {
   font-family: "Abril Fatface", cursive;
 }
 
+
 .subtitle {
   text-align: center;
   font-size: 1.5em;
   font-family: "Dancing Script", cursive;
+  margin-top: -.8em;
 }
 
 iframe {
@@ -64,7 +66,7 @@ footer {
   margin: 1% 10%;
   padding: 16px;
   border-style: groove;
-  border-width: 12px;
+  border-width: 9px;
   border-color: #bebebe;
   font-size: 18px;
 }
@@ -72,4 +74,8 @@ footer {
 .about-title {
   padding: 1%;
   font-size: 2.8em;
+}
+
+.story {
+  font-family: 'Abril Fatface', cursive;
 }
