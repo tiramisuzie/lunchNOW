@@ -15,7 +15,6 @@ a:visited {
   font-family: "Merriweather Sans", sans-serif;
   font-size: 0.75em;
   margin-right: 0.4em;
-  padding: 0.5em 5em;
   color: black;
 }
 a:hover {
@@ -75,6 +74,7 @@ form {
 .main-deck {
   display: grid;
   width: 100%;
+  margin: 3em;
   grid-gap: 3em;
   grid-template-columns: 1fr;
   grid-template-areas:
@@ -129,6 +129,7 @@ form {
   padding: 1em;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .media-obj__picture {
@@ -166,6 +167,9 @@ form {
 
 .media-obj__button {
   padding: 0;
+  position: absolute;
+  top: 21em;
+  left: 22em;
 }
 .media-obj__button::after {
   content: " \2665";
