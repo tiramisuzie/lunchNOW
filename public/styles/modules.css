@@ -87,12 +87,21 @@ form {
   display: flex;
 }
 
+.favicon {
+  height: 1.3em;
+}
 
 
 .name {
   font-size: 1.8em;
   font-weight: 400;
-  font-family: 'Dancing Script', cursive
+  font-family: 'Lobster', cursive;
+
+}
+.comingsoon {
+  font-family: 'Lobster', cursive;
+  font-display: center;
+  font-size: 3em;
 }
 
 .main-deck {

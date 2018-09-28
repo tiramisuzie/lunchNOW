@@ -1,6 +1,6 @@
 h1 {
   text-align: center;
-  font-size: 2.5em;
+  font-size: 3.5em;
   font-family: "Abril Fatface", cursive;
 }
 
@@ -73,9 +73,13 @@ footer {
 
 .about-title {
   padding: 1%;
-  font-size: 2.8em;
+  font-size: 1.8em;
 }
 
 .story {
-  font-family: 'Abril Fatface', cursive;
+  padding-left: 2em;
+  padding-right: 2em;
+  font-family: 'Questrial', sans-serif;
+
+  font-size: .9em;
 }
