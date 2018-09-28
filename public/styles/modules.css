@@ -1,8 +1,14 @@
 /* === OVERALL MODULE RULES === */
+#headerTitle h1 {
+  text-align: center;
+  font-size: 2.5em;
+  font-family: 'Abril Fatface', cursive;
+}
 
 body > header {
   background: white;
 }
+
 a,
 a:visited {
   text-decoration: none;
@@ -10,9 +16,7 @@ a:visited {
   font-size: 0.75em;
   margin-right: 0.4em;
   padding: 0.5em 5em;
-
   color: black;
-  text-transform: uppercase;
 }
 a:hover {
   font-weight: 300;
@@ -24,6 +28,12 @@ a:hover {
   border-top: 1.5px solid black;
   text-align: center;
   padding: 0.5em;
+}
+
+.message {
+  font-family: "Merriweather Sans", sans-serif;
+  padding-left: 35px;
+  font-size: 1.2em;
 }
 
 .searchbar {
@@ -52,12 +62,15 @@ form {
   width: 80%;
   margin: 6em auto;
 }
+
 .searchBarContainer {
   background-image: url("./assets/salad.jpg");
   background-size: cover;
   height: 60vw;
   display: flex;
 }
+
+
 
 .main-deck {
   display: grid;
@@ -109,7 +122,9 @@ form {
 
 /* =========== Media object ============*/
 .media-obj {
-  box-shadow: 1px 1px 2px 2px #29506d;
+  border: grey;
+  border-style: double;
+  border-width: medium;
   margin: 1em auto;
   padding: 1em;
   display: flex;
@@ -124,11 +139,13 @@ form {
 .media-obj__data {
   width: 100%;
   text-align: center;
+  font-display: sans-serif;
+  max-height: 0;
 }
 .media-obj__header {
-  font-size: 2em;
-  color: #fff;
-  text-shadow: 2px 2px #29506d;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.5em;
+
 }
 .--smaller {
   font-size: 1.2em;
@@ -166,12 +183,14 @@ form {
   display: flex;
   justify-content: space-evenly;
   flex-wrap: wrap;
+  text-align: center;
 }
 
 .list__elm {
   flex: 1 1 auto;
   width: 45%;
   text-align: left;
+  opacity: 0;
 }
 
 .media-obj:nth-of-type(1) {
@@ -236,20 +255,19 @@ p {
     display: none;
   }
 
-  nav {
-    padding: 0.2em 0.2em 0.2em 2em;
-  }
+.icon-menu {
+  display: none;
+}
 
-  nav ul {
-    display: block;
-  }
+nav ul {
+  display: block;
+}
 
-  nav ul li {
-    display: inline;
-    border-bottom: none;
-  }
+nav ul li {
+  display: inline;
+  border-bottom: none;
+}
 
-  nav ul li:hover a {
-    color: #29506d;
-  }
+nav ul li:hover a {
+  color: #29506d;
 }
