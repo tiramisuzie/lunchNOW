@@ -27,3 +27,8 @@ p {
 * {
   box-sizing: inherit;
 }
+
+span {
+  /* margin-left: 20px; */
+  font-weight: bolder;
+}

@@ -33,6 +33,7 @@ app.get('/favorites', tasks.renderFavoriteRecipes);
 app.get('/search/results', tasks.searchForRecipesExternalApi);
 
 app.get('/aboutus', (req, res) => res.render('./pages/aboutus'));
+app.get('/shoppinglist', (req, res) => res.render('./pages/shoppinglist'));
 
 app.use(tasks.handle404);
 
