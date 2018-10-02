@@ -1,5 +1,9 @@
 'use strict';
 
+// I am extremely confused by this reused blog app code.
+// None of it is ever used in your app. None of these prototype
+// methods need to exist. This scares me greatly: why did someone
+// create this file and fill it with nonsense code?
 function Recipe(rawDataObj) {
   Object.keys(rawDataObj).forEach(key => {
     this[key] = rawDataObj[key];
@@ -14,9 +18,11 @@ Recipe.prototype.toHtml = function() {
   this.daysAgo = parseInt(
     (new Date() - new Date(this.published_on)) / 60 / 60 / 24 / 1000
   );
+  // you don't have publish status.
   this.publishStatus = this.published_on
     ? `published ${this.daysAgo} days ago`
     : '(draft)';
+  // you don't use markdown.
   this.body = marked(this.body);
 
   return template(this);
@@ -28,6 +34,7 @@ Recipe.loadAll = recipeData => {
   );
 
   recipeData.forEach(recipeObject =>
+    // This code will not run. Needs to be Recipe, and recipeObject.
     recipe.all.push(new recipe(articleObject))
   );
 };
@@ -91,15 +98,16 @@ Recipe.prototype.updateRecord = function(callback) {
     if (callback) callback();
   });
 };
+// literally almost 100 lines of irrelevant code.
 
 
+// this is nice! this is all the FE JS you needed!
 let handleFavorites = function(event) {
   event.preventDefault();
   $.ajax({
     url: `/recipes`,
     method: 'POST',
     data: {
-
       recipe_id: $(this).data('recipe_id')
     }
   }).then((resp, status, xhr) => {

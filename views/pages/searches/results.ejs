@@ -8,7 +8,7 @@
   <div class="main-deck">
     <%- include('../../partials/noresults', {recipes: recipes}); -%>
     <% recipes.forEach( recipe => { %>
-    <%- include('../../partials/itemFull', {recipe: recipe}); -%>
+      <%- include('../../partials/itemFull', {recipe: recipe}); -%>
     <% }); %>
   </div>
 </section>

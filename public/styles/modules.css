@@ -19,6 +19,7 @@ a:visited {
   margin-right: 0.4em;
   color: black;
 }
+/* I don't love that this moves the other nav elements. Might be nice if it had a set width. */
 .tab:hover {
   font-weight: bolder;
   font-size: 1.1em;

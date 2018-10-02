@@ -1,4 +1,5 @@
 {
+  /* There are a lot of things here from the blog app that aren't relevant to your app. */
   "globals" : {
     "rawData": true,
     "Article": true,

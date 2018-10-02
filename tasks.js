@@ -1,3 +1,4 @@
+// why is this called 'tasks', that was only relevant when I wrote a tasks app
 const pg = require('pg');
 const validatorEscape = require('validator/lib/escape');
 const superagent = require('superagent');
@@ -8,6 +9,12 @@ const client = new pg.Client(process.env.DATABASE_URL);
 client.connect();
 client.on('error', handleConnectionError);
 
+// Overall feedback: parsing through this file is _hard_.
+// I need a lot more context on these functions, with comments or something,
+// because right now I have no idea what these functions are for.
+// It also says "helper functions" at the top, but I have no idea (without deeper diving)
+// which of the functions in this file are actually used at a route, vs. are just called
+// within this file.
 //helper functions
 function handleError(err, req, res, next) {
   // set locals, only providing error in development
@@ -76,6 +83,7 @@ function dbCacheInsert(recipeObj) {
       })
       .catch(err => createError(err));
   });
+  // You're doing this Promise.all on the secondary check, instead of on the initial insert! I'd rather do both of the above inserts within a Promise.all.
   return Promise.all(
     recipeObj.map(recipe => checkRecordExistsInDB(recipe.id))
   ).then(data => {
@@ -88,6 +96,8 @@ function dbCacheInsert(recipeObj) {
 
 //take API response and turn into recipe object
 function toRecipeObj(apiResponse) {
+  // Seems unnecessarily verbose... you could just say:
+  // if (!apiResponse.body.hits) return [];
   if (Object.keys(apiResponse.body).length === 0) return [];
   return apiResponse.body.hits.map(recipe => {
     return {
@@ -112,6 +122,8 @@ function getData(req, res, next) {
     ingredientList.ingredients,
     howMuchIngredients
   );
+  // Shouldn't be necessary-it should fix that automatically when you use superagent.
+  // In fact, you should be able to use .query: see https://visionmedia.github.io/superagent/#get-requests
   let queryStringForApi = randomIngredients.join(' ').replace(/\s/g, '+');
   let url = `https://api.edamam.com/search?q=${queryStringForApi}&app_id=${
     process.env.ApplicationID
@@ -120,18 +132,19 @@ function getData(req, res, next) {
   superagent.get(url).end((err, apiResponse) => {
     wipeTables();
     let recipesData = toRecipeObj(apiResponse);
-    dbCacheInsert(recipesData).then(recipes =>
-      res.render('index', { recipes: recipes })
-    );
+    dbCacheInsert(recipesData).then(recipes => res.render('index', { recipes }));
   });
 }
 
+// I don't like that this uses a plural parameter name for a single value.
+// I'd MUCH rather call this id or value.
 function checkRecordExistsInDB(values) {
   let SQL = 'select 1 from favoriteRecipes where favoriterecipe_id = $1;';
   return client.query(SQL, [values]).then(data => data.rowCount);
 }
 
 //query ingredients for favorite recipes to render favorites page with ingredients
+// Seems like this is only used in one place?
 function retrieveIngredientsForFavoriteRecipe(values) {
   let SQL =
     'SELECT ingredient_desc as text FROM ingredients WHERE recipe_ref_id = $1;';
@@ -204,6 +217,7 @@ function renderFavoriteRecipes(request, response, next) {
   client.query(SQL, (err, result) => {
     if (err) {
       console.error(err);
+      // noooo zombie
       // response.redirect('/error');
       next(createError(err));
     } else {
@@ -245,6 +259,7 @@ function wipeTables() {
 function searchForRecipesExternalApi(request, response, next) {
   let userInputSanitized = validatorEscape(request.query.searchBar);
   console.log(`User input was: ${userInputSanitized}`);
+  // could also use .query here instead of constructing by hand
   let url = `https://api.edamam.com/search?q=${userInputSanitized}&app_id=${
     process.env.ApplicationID
   }&app_key=${process.env.ApplicationKey}`;
@@ -264,6 +279,7 @@ function searchForRecipesExternalApi(request, response, next) {
   });
 }
 
+// why is there an assortment of req/res vs. request/response? consistency!
 function handleDataManipulationRequest(req, res, next) {
   let recipe_id = req.body.recipe_id;
   checkRecordExistsInDB(recipe_id)
@@ -275,11 +291,12 @@ function handleDataManipulationRequest(req, res, next) {
 }
 
 function transferToCache(req, res, next) {
-  copyToCache(req, res, next).then(data => deleteDataFromDb(req, res, next));
+  copyToCache(req, res, next).then(() => deleteDataFromDb(req, res, next));
 }
 
 //copy favorites and ingredients into cache tables to allow user to re-favorite a recipe
 function copyToCache(req, res, next) {
+  // why did you define this to take in req/res/next when it only needs req?
   let recipe_id = req.body.recipe_id;
   let msgForTrx = `Recipe_id #...${recipe_id.slice(-10)}: `;
   console.log(`${msgForTrx}begin insertion`);
@@ -307,8 +324,11 @@ function copyToCache(req, res, next) {
     select 1 
       from resultscache 
      where resultsrecipe_id = $1);`;
+  // line 315, it flips to lower case; why?
   let values = [recipe_id];
 
+  // returning promises inside of returning promises makes me nervous.
+  // this feels over-engineered.
   return client.query(SQL, values).then(data => {
     console.log(`${msgForTrx}inserted into resultscache ${data.rowCount}`);
     let SQL = `INSERT INTO ingredientscache (recipe_ref_id, ingredient_desc) 
@@ -319,7 +339,6 @@ function copyToCache(req, res, next) {
           select 1 
             from ingredientscache 
            where recipe_ref_id = $1);`;
-
     return client.query(SQL, values).then(data => {
       console.log(
         `${msgForTrx}inserted into ingredientscache ${data.rowCount}`
@@ -358,6 +377,8 @@ module.exports = {
   handleConnectionError,
   handle404,
   getData,
+  // You don't actually use this in any other file; why is it exported?
+  // Ditto with many of the other helper methods.
   addDataToDb,
   searchForRecipesExternalApi,
   handleDataManipulationRequest,
