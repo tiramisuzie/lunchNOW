@@ -9,11 +9,11 @@
 *   - get data from external API (retrieve part of the first stage;
 *     either by user search or randomly through the main page);
 *   - store data to temporary tables (store part first stage);
-*   - move data to resilient tables from temp tables (second stage;
+*   - move data to persistent tables from temp tables (second stage;
 *     the user saves data she wants later to retrieve);
-*   - retrieve data from resilient tables (third stage; present the data
+*   - retrieve data from persistent tables (third stage; present the data
 *     to the user );
-*   - move data to temp tables from resilient ones (fourth stage; the user
+*   - move data to temp tables from persistent ones (fourth stage; the user
 *     wants to get rid of the data, but still can change her mind and
 *     'resave' the data in DB);
 *   - clear data from temp tables (fifth stage; the user cannot 'resave');
@@ -34,10 +34,10 @@ app.use(express.static('./public'));
 
 // pull random data from external API for the main page
 // and save them to temp tables in DB (cache-like tables)
-app.get('/', tasks.getData);
+app.get('/', tasks.getRandomRecipes);
 
 // (this part isn't RESTful: one endpoint, two actions)
-// add new data to DB (resilient tables)
+// add new data to DB (persistent tables)
 // or delete data from DB
 app.post('/recipes', tasks.handleDataManipulationRequest);
 
