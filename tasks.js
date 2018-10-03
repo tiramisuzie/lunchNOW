@@ -6,10 +6,10 @@ require('dotenv').config();
 var createError = require('http-errors');
 const client = new pg.Client(process.env.DATABASE_URL);
 client.connect();
-client.on('error', handleConnectionError);
+client.on('error', handleDBConnectionError);
 
 //helper functions
-function handleError(err, req, res, next) {
+function handleError(err, req, res) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -19,7 +19,7 @@ function handleError(err, req, res, next) {
   res.render('pages/error', { code: err.status, message: err.message });
 }
 
-function handleConnectionError(error) {
+function handleDBConnectionError(error) {
   console.error(error);
   createError(error.status, 'DB Connection Error');
 }
@@ -117,13 +117,16 @@ function getData(req, res, next) {
     process.env.ApplicationID
   }&app_key=${process.env.ApplicationKey}&to=${howMuchToShow}`;
   console.log(`randomIngredients: ${randomIngredients}`);
-  superagent.get(url).end((err, apiResponse) => {
-    wipeTables();
-    let recipesData = toRecipeObj(apiResponse);
-    dbCacheInsert(recipesData).then(recipes =>
-      res.render('index', { recipes: recipes })
-    );
-  });
+  superagent
+    .get(url)
+    .on('error', err => next(createError(err.status, err.response)))
+    .end((err, apiResponse) => {
+      wipeTables();
+      let recipesData = toRecipeObj(apiResponse);
+      dbCacheInsert(recipesData)
+        .then(recipes => res.render('index', { recipes: recipes }))
+        .catch(err => next(createError(err)));
+    });
 }
 
 function checkRecordExistsInDB(values) {
@@ -275,11 +278,11 @@ function handleDataManipulationRequest(req, res, next) {
 }
 
 function transferToCache(req, res, next) {
-  copyToCache(req, res, next).then(data => deleteDataFromDb(req, res, next));
+  copyToCache(req, res, next).then(() => deleteDataFromDb(req, res, next));
 }
 
 //copy favorites and ingredients into cache tables to allow user to re-favorite a recipe
-function copyToCache(req, res, next) {
+function copyToCache(req) {
   let recipe_id = req.body.recipe_id;
   let msgForTrx = `Recipe_id #...${recipe_id.slice(-10)}: `;
   console.log(`${msgForTrx}begin insertion`);
@@ -355,13 +358,9 @@ function deleteDataFromDb(req, res, next) {
 
 module.exports = {
   handleError,
-  handleConnectionError,
   handle404,
   getData,
-  addDataToDb,
   searchForRecipesExternalApi,
   handleDataManipulationRequest,
-  deleteDataFromDb,
-  renderFavoriteRecipes,
-  copyToCache
+  renderFavoriteRecipes
 };
