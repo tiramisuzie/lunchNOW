@@ -6,10 +6,10 @@ require('dotenv').config();
 var createError = require('http-errors');
 const client = new pg.Client(process.env.DATABASE_URL);
 client.connect();
-client.on('error', handleConnectionError);
+client.on('error', handleDBConnectionError);
 
 //helper functions
-function handleError(err, req, res, next) {
+function handleError(err, req, res) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -19,7 +19,7 @@ function handleError(err, req, res, next) {
   res.render('pages/error', { code: err.status, message: err.message });
 }
 
-function handleConnectionError(error) {
+function handleDBConnectionError(error) {
   console.error(error);
   createError(error.status, 'DB Connection Error');
 }
@@ -44,7 +44,11 @@ function getRandomFromRange(arr, numberElmToChoose) {
   return result;
 }
 
-//insert search results and random index recipes to cache tables
+// insert external API response results to temp tables.
+// Promises are used here to handle additional requests to DB
+// to check whether we already have any recipes saved or not;
+// The functions mutates input by setting 'saved' boolean indicator
+// for each input data entity.
 function dbCacheInsert(recipeObj) {
   recipeObj.forEach(recipe => {
     let SQL =
@@ -86,7 +90,7 @@ function dbCacheInsert(recipeObj) {
   });
 }
 
-//take API response and turn into recipe object
+// map data from API response to recipe object
 function toRecipeObj(apiResponse) {
   if (Object.keys(apiResponse.body).length === 0) return [];
   return apiResponse.body.hits.map(recipe => {
@@ -104,8 +108,13 @@ function toRecipeObj(apiResponse) {
   });
 }
 
-//randomly use ingredients from array to generate recipes to display on index
-function getData(req, res, next) {
+// randomly use ingredients from prestored array to retrieve recipes
+// and present results to the user on the main page;
+// should be refactored to 3 units:
+//   getRandomRecipeString;
+//   getDataFromApi;
+//   renderPage;
+function getRandomRecipes(req, res, next) {
   let howMuchToShow = 6;
   let howMuchIngredients = 2;
   let randomIngredients = getRandomFromRange(
@@ -117,13 +126,16 @@ function getData(req, res, next) {
     process.env.ApplicationID
   }&app_key=${process.env.ApplicationKey}&to=${howMuchToShow}`;
   console.log(`randomIngredients: ${randomIngredients}`);
-  superagent.get(url).end((err, apiResponse) => {
-    wipeTables();
-    let recipesData = toRecipeObj(apiResponse);
-    dbCacheInsert(recipesData).then(recipes =>
-      res.render('index', { recipes: recipes })
-    );
-  });
+  superagent
+    .get(url)
+    .on('error', err => next(createError(err.status, err.response)))
+    .end((err, apiResponse) => {
+      wipeTables();
+      let recipesData = toRecipeObj(apiResponse);
+      dbCacheInsert(recipesData)
+        .then(recipes => res.render('index', { recipes: recipes }))
+        .catch(err => next(createError(err)));
+    });
 }
 
 function checkRecordExistsInDB(values) {
@@ -131,17 +143,16 @@ function checkRecordExistsInDB(values) {
   return client.query(SQL, [values]).then(data => data.rowCount);
 }
 
-//query ingredients for favorite recipes to render favorites page with ingredients
+// query ingredients for favorite recipes to render favorites page
 function retrieveIngredientsForFavoriteRecipe(values) {
   let SQL =
     'SELECT ingredient_desc as text FROM ingredients WHERE recipe_ref_id = $1;';
   return client.query(SQL, [values]).then(result => {
-    // console.log(result);
     return result;
   });
 }
 
-//add new object to DB
+// add new recipe to persistent tables
 function addDataToDb(req, res) {
   // console.log('post');
   let recipe_id = req.body.recipe_id;
@@ -191,7 +202,10 @@ function addDataToDb(req, res) {
   });
 }
 
-//render favorite recipes page from favorites table
+// retrieve recipes from persistent tables and render favorite
+// recipes page; Promises are used to populate recipes with
+// ingredients;
+// could be refactored into: getDataFromDB and renderPage
 function renderFavoriteRecipes(request, response, next) {
   let SQL = `SELECT favoriteRecipe_id as id, 
   title, 
@@ -204,7 +218,6 @@ function renderFavoriteRecipes(request, response, next) {
   client.query(SQL, (err, result) => {
     if (err) {
       console.error(err);
-      // response.redirect('/error');
       next(createError(err));
     } else {
       Promise.all(
@@ -213,12 +226,10 @@ function renderFavoriteRecipes(request, response, next) {
         })
       )
         .then(data => {
-          // console.log(data.rows);
           data.forEach(
             (ingredients, ndx) =>
               (result.rows[ndx].ingredients = ingredients.rows)
           );
-          // console.log(result.rows);
           response.render(`./pages/recipes/favorites`, {
             recipes: result.rows
           });
@@ -228,7 +239,7 @@ function renderFavoriteRecipes(request, response, next) {
   });
 }
 
-//truncate cache tables
+// truncate temp tables
 function wipeTables() {
   let SQL = 'TRUNCATE ingredientscache, resultscache;';
   client.query(SQL).then(() => {
@@ -236,12 +247,10 @@ function wipeTables() {
   });
 }
 
-//details for one recipe to display in iframe page
-// function getDetails(request, response) {
-//   response.render('.pages/recipes/iframe', )
-// }
-
-//display API results from queried items
+// display API results for user input
+// could be refactored:
+//   getDataFromApi;
+//   renderPage;
 function searchForRecipesExternalApi(request, response, next) {
   let userInputSanitized = validatorEscape(request.query.searchBar);
   console.log(`User input was: ${userInputSanitized}`);
@@ -264,6 +273,7 @@ function searchForRecipesExternalApi(request, response, next) {
   });
 }
 
+// dispatcher to handle behavior for user click on heart icon
 function handleDataManipulationRequest(req, res, next) {
   let recipe_id = req.body.recipe_id;
   checkRecordExistsInDB(recipe_id)
@@ -275,11 +285,12 @@ function handleDataManipulationRequest(req, res, next) {
 }
 
 function transferToCache(req, res, next) {
-  copyToCache(req, res, next).then(data => deleteDataFromDb(req, res, next));
+  copyToCache(req, res, next).then(() => deleteDataFromDb(req, res, next));
 }
 
-//copy favorites and ingredients into cache tables to allow user to re-favorite a recipe
-function copyToCache(req, res, next) {
+// copy favorites and ingredients into temp tables to allow user
+// to re-favorite a recipe; return a promise to chain it later;
+function copyToCache(req) {
   let recipe_id = req.body.recipe_id;
   let msgForTrx = `Recipe_id #...${recipe_id.slice(-10)}: `;
   console.log(`${msgForTrx}begin insertion`);
@@ -329,7 +340,7 @@ function copyToCache(req, res, next) {
   });
 }
 
-//delete from ingredients and favorites tables
+// delete from persistent tables
 function deleteDataFromDb(req, res, next) {
   let recipe_id = req.body.recipe_id;
   let msgForTrx = `Recipe_id #...${recipe_id.slice(-10)}: `;
@@ -355,13 +366,9 @@ function deleteDataFromDb(req, res, next) {
 
 module.exports = {
   handleError,
-  handleConnectionError,
   handle404,
-  getData,
-  addDataToDb,
+  getRandomRecipes,
   searchForRecipesExternalApi,
   handleDataManipulationRequest,
-  deleteDataFromDb,
-  renderFavoriteRecipes,
-  copyToCache
+  renderFavoriteRecipes
 };
