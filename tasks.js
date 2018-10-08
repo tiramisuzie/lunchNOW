@@ -1,3 +1,4 @@
+// why is this called 'tasks', that was only relevant when I wrote a tasks app
 const pg = require('pg');
 const validatorEscape = require('validator/lib/escape');
 const superagent = require('superagent');
@@ -8,6 +9,8 @@ const client = new pg.Client(process.env.DATABASE_URL);
 client.connect();
 client.on('error', handleDBConnectionError);
 
+// Overall feedback: Way more readable now. Many of the architecture concerns still remain,
+// but it wouldn't take me nearly as long to get up-and-running on this file anymore.
 //helper functions
 function handleError(err, req, res) {
   // set locals, only providing error in development
@@ -63,10 +66,12 @@ function dbCacheInsert(recipeObj) {
       recipe.total_time,
       recipe.id
     ];
+    // zombie console.log
     // console.log('cache table inserted');
     client
       .query(SQL, values)
       .then(data => {
+        // This is really where you should Promise.all.
         recipe.ingredients.forEach(ing => {
           let SQL =
             'INSERT INTO ingredientsCache(recipe_ref_id, ingredient_desc, weight) VALUES($1, $2, $3);';
@@ -80,6 +85,7 @@ function dbCacheInsert(recipeObj) {
       })
       .catch(err => createError(err));
   });
+  // You're doing this Promise.all on the secondary check, instead of on the initial insert! I'd rather do both of the above inserts within a Promise.all.
   return Promise.all(
     recipeObj.map(recipe => checkRecordExistsInDB(recipe.id))
   ).then(data => {
@@ -92,6 +98,8 @@ function dbCacheInsert(recipeObj) {
 
 // map data from API response to recipe object
 function toRecipeObj(apiResponse) {
+  // Seems unnecessarily verbose... you could just say:
+  // if (!apiResponse.body.hits) return [];
   if (Object.keys(apiResponse.body).length === 0) return [];
   return apiResponse.body.hits.map(recipe => {
     return {
@@ -121,6 +129,8 @@ function getRandomRecipes(req, res, next) {
     ingredientList.ingredients,
     howMuchIngredients
   );
+  // Shouldn't be necessary-it should fix that automatically when you use superagent.
+  // In fact, you should be able to use .query: see https://visionmedia.github.io/superagent/#get-requests
   let queryStringForApi = randomIngredients.join(' ').replace(/\s/g, '+');
   let url = `https://api.edamam.com/search?q=${queryStringForApi}&app_id=${
     process.env.ApplicationID
@@ -138,12 +148,15 @@ function getRandomRecipes(req, res, next) {
     });
 }
 
+// I don't like that this uses a plural parameter name for a single value.
+// I'd MUCH rather call this id or value.
 function checkRecordExistsInDB(values) {
   let SQL = 'select 1 from favoriteRecipes where favoriterecipe_id = $1;';
   return client.query(SQL, [values]).then(data => data.rowCount);
 }
 
-// query ingredients for favorite recipes to render favorites page
+//query ingredients for favorite recipes to render favorites page with ingredients
+// Seems like this is only used in one place?
 function retrieveIngredientsForFavoriteRecipe(values) {
   let SQL =
     'SELECT ingredient_desc as text FROM ingredients WHERE recipe_ref_id = $1;';
@@ -154,11 +167,13 @@ function retrieveIngredientsForFavoriteRecipe(values) {
 
 // add new recipe to persistent tables
 function addDataToDb(req, res) {
+  // zombie code
   // console.log('post');
   let recipe_id = req.body.recipe_id;
   let msgForTrx = `Recipe_id #...${recipe_id.slice(-10)}: `;
   console.log(`${msgForTrx}begin insertion`);
 
+  // SQL switches between using ALL CAPS and then (at the bottom) not
   let SQL = `INSERT INTO favoriteRecipes (
       favoriteRecipe_id, 
       title, 
@@ -254,6 +269,7 @@ function wipeTables() {
 function searchForRecipesExternalApi(request, response, next) {
   let userInputSanitized = validatorEscape(request.query.searchBar);
   console.log(`User input was: ${userInputSanitized}`);
+  // could also use .query here instead of constructing by hand
   let url = `https://api.edamam.com/search?q=${userInputSanitized}&app_id=${
     process.env.ApplicationID
   }&app_key=${process.env.ApplicationKey}`;
@@ -318,8 +334,11 @@ function copyToCache(req) {
     select 1 
       from resultscache 
      where resultsrecipe_id = $1);`;
+  // line 315, it flips to lower case; why?
   let values = [recipe_id];
 
+  // returning promises inside of returning promises makes me nervous.
+  // this feels over-engineered.
   return client.query(SQL, values).then(data => {
     console.log(`${msgForTrx}inserted into resultscache ${data.rowCount}`);
     let SQL = `INSERT INTO ingredientscache (recipe_ref_id, ingredient_desc) 
@@ -330,7 +349,6 @@ function copyToCache(req) {
           select 1 
             from ingredientscache 
            where recipe_ref_id = $1);`;
-
     return client.query(SQL, values).then(data => {
       console.log(
         `${msgForTrx}inserted into ingredientscache ${data.rowCount}`

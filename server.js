@@ -46,7 +46,7 @@ app.get('/recipe-details', (req, res) =>
   res.render('./pages/recipes/iframe', {
     url: req.query.url,
     id: req.query.id,
-    saved: req.query.saved === 'true' ? true : false
+    saved: req.query.saved === 'true'
   })
 );
 

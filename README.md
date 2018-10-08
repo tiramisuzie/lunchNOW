@@ -36,6 +36,8 @@ database - lunchnow
 tables - favoriterecipes, ingredients, ingredientscache, resultscache  
 see recipes.sql  
 
+<!-- Missing directions on how to get this up and running on your computer: npm i, adding .env file, creating db/tables -->
+
 ## API
 Edamam API endpoint - https://developer.edamam.com/edamam-docs-recipe-api  
 
