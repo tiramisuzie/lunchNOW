@@ -46,7 +46,6 @@ app.get('/recipe-details', (req, res) =>
   res.render('./pages/recipes/iframe', {
     url: req.query.url,
     id: req.query.id,
-    // the ternary isn't necessary here!
     saved: req.query.saved === 'true'
   })
 );

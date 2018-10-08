@@ -9,12 +9,8 @@ const client = new pg.Client(process.env.DATABASE_URL);
 client.connect();
 client.on('error', handleDBConnectionError);
 
-// Overall feedback: parsing through this file is _hard_.
-// I need a lot more context on these functions, with comments or something,
-// because right now I have no idea what these functions are for.
-// It also says "helper functions" at the top, but I have no idea (without deeper diving)
-// which of the functions in this file are actually used at a route, vs. are just called
-// within this file.
+// Overall feedback: Way more readable now. Many of the architecture concerns still remain,
+// but it wouldn't take me nearly as long to get up-and-running on this file anymore.
 //helper functions
 function handleError(err, req, res) {
   // set locals, only providing error in development
@@ -70,10 +66,12 @@ function dbCacheInsert(recipeObj) {
       recipe.total_time,
       recipe.id
     ];
+    // zombie console.log
     // console.log('cache table inserted');
     client
       .query(SQL, values)
       .then(data => {
+        // This is really where you should Promise.all.
         recipe.ingredients.forEach(ing => {
           let SQL =
             'INSERT INTO ingredientsCache(recipe_ref_id, ingredient_desc, weight) VALUES($1, $2, $3);';
@@ -169,11 +167,13 @@ function retrieveIngredientsForFavoriteRecipe(values) {
 
 // add new recipe to persistent tables
 function addDataToDb(req, res) {
+  // zombie code
   // console.log('post');
   let recipe_id = req.body.recipe_id;
   let msgForTrx = `Recipe_id #...${recipe_id.slice(-10)}: `;
   console.log(`${msgForTrx}begin insertion`);
 
+  // SQL switches between using ALL CAPS and then (at the bottom) not
   let SQL = `INSERT INTO favoriteRecipes (
       favoriteRecipe_id, 
       title, 
