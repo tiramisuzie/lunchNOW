@@ -4,7 +4,6 @@
 
   font-size: 2.5em;
   font-family: "Abril Fatface", cursive;
-
 }
 
 body > header {
@@ -21,8 +20,7 @@ a:visited {
 }
 /* I don't love that this moves the other nav elements. Might be nice if it had a set width. */
 .tab:hover {
-  font-weight: bolder;
-  font-size: 1.1em;
+  color: #555;
 }
 
 .nav-container {
@@ -73,7 +71,7 @@ a:visited {
 
 .tab {
   padding: 1em 5em;
-  font-size: .95em;
+  font-size: 0.95em;
 }
 form {
   width: 80%;
@@ -92,15 +90,13 @@ form {
   height: 1.3em;
 }
 
-
 .name {
   font-size: 1.8em;
   font-weight: 400;
-  font-family: 'Lobster', cursive;
-
+  font-family: "Lobster", cursive;
 }
 .comingsoon {
-  font-family: 'Lobster', cursive;
+  font-family: "Lobster", cursive;
   font-display: center;
   font-size: 3em;
 }
